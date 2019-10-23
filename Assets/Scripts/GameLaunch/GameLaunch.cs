@@ -19,7 +19,7 @@ public class GameLaunch : MonoBehaviour
     {
         LoggerHelper.Instance.Startup();
 #if UNITY_IPHONE
-        UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert | UnityEngine.iOS.NotificationType.Badge | UnityEngine.iOS.NotificationType.Sound);
+        //UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert | UnityEngine.iOS.NotificationType.Badge | UnityEngine.iOS.NotificationType.Sound);
         UnityEngine.iOS.Device.SetNoBackupFlag(Application.persistentDataPath);
 #endif
 
