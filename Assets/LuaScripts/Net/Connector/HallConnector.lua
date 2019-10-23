@@ -4,8 +4,8 @@
 --]]
 
 local HallConnector = BaseClass("HallConnector", Singleton)
-local SendMsgDefine = require "Net.Config.SendMsgDefine"
-local NetUtil = require "Net.Util.NetUtil"
+-- local SendMsgDefine = require "Net.Config.SendMsgDefine"
+-- local NetUtil = require "Net.Util.NetUtil"
 
 local ConnStatus = {
 	Init = 0,

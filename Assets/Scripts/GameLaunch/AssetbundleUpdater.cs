@@ -45,13 +45,14 @@ public class AssetbundleUpdater : MonoBehaviour
     Text statusText;
     Slider slider;
 
-#if UNITY_EDITOR || CLIENT_DEBUG
+
     // Hotfix测试---用于测试热更模块的热修复
     public void TestHotfix()
     {
+#if UNITY_EDITOR || CLIENT_DEBUG
         Logger.Log("********** AssetbundleUpdater : Call TestHotfix in cs...");
-    }
 #endif
+    }
 
     void Awake()
     {

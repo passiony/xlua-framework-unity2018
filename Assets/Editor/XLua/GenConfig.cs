@@ -133,5 +133,7 @@ public static class GenConfig
 		new List<string>(){"System.IO.DirectoryInfo", "Create", "System.Security.AccessControl.DirectorySecurity"},
 		new List<string>(){"UnityEngine.MonoBehaviour", "runInEditMode"},
 		new List<string>(){"UnityEngine.UI.Text", "OnRebuildRequested"},
-	};
+        new List<string>(){"System.Type", "IsSZArray"},
+
+    };
 }
