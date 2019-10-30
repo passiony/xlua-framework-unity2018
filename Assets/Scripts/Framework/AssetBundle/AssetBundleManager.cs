@@ -76,9 +76,7 @@ namespace AssetBundles
         // Hotfix测试---用于侧测试资源模块的热修复
         public void TestHotfix()
         {
-#if UNITY_EDITOR || CLIENT_DEBUG
             Logger.Log("********** AssetBundleManager : Call TestHotfix in cs...");
-#endif
         }
 
         public IEnumerator Initialize()
@@ -446,6 +444,10 @@ namespace AssetBundles
 
             var creater = ResourceWebRequester.Get();
             var url = DownloadUrl + filePath;
+
+#if UNITY_CLIENT
+            Debug.Log("DownloadAssetFileAsync:" + url);
+#endif
             creater.Init(filePath, url, true);
             webRequesting.Add(filePath, creater);
             webRequesterQueue.Enqueue(creater);
@@ -484,6 +486,9 @@ namespace AssetBundles
         {
             var creater = ResourceWebRequester.Get();
             var url = AssetBundleUtility.GetAssetBundleFileUrl(assetbundleName);
+#if UNITY_CLIENT
+            Debug.Log("RequestAssetBundleAsync：" + url);
+#endif
             creater.Init(assetbundleName, url, true);
             webRequesting.Add(assetbundleName, creater);
             webRequesterQueue.Enqueue(creater);

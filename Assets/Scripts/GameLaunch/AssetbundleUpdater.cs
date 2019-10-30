@@ -49,9 +49,7 @@ public class AssetbundleUpdater : MonoBehaviour
     // Hotfix测试---用于测试热更模块的热修复
     public void TestHotfix()
     {
-#if UNITY_EDITOR || CLIENT_DEBUG
         Logger.Log("********** AssetbundleUpdater : Call TestHotfix in cs...");
-#endif
     }
 
     void Awake()
@@ -87,9 +85,9 @@ public class AssetbundleUpdater : MonoBehaviour
         Logger.Log(string.Format("InitLocalVersion use {0}ms", (DateTime.Now - start).Milliseconds));
 
         // 初始化SDK
-        start = DateTime.Now;
-        yield return InitSDK();
-        Logger.Log(string.Format("InitSDK use {0}ms", (DateTime.Now - start).Milliseconds));
+        //start = DateTime.Now;
+        //yield return InitSDK();
+        //Logger.Log(string.Format("InitSDK use {0}ms", (DateTime.Now - start).Milliseconds));
 
 #if UNITY_EDITOR
         serverAppVersion = clientAppVersion;

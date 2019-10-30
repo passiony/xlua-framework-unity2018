@@ -34,7 +34,8 @@ public class LoggerHelper : MonoSingleton<LoggerHelper>
         {
             Application.logMessageReceived += (LogHandler);
 
-            InvokeRepeating("CheckReport", 1f, 1f);
+            //关闭error上报定时器
+            //InvokeRepeating("CheckReport", 1f, 1f);
         }
     }
 

@@ -17,7 +17,7 @@ namespace GameChannel
     {
         public override void Init()
         {
-            AndroidSDKHelper.FuncCall("TestChannelInit");
+            //AndroidSDKHelper.FuncCall("TestChannelInit");
         }
 
         public override string GetBundleID()
@@ -37,14 +37,14 @@ namespace GameChannel
 
         public override void DownloadGame(params object[] paramList)
         {
-            string url = paramList[0] as string;
-            string saveName = paramList[1] as string;
-            AndroidSDKHelper.FuncCall("DownloadGame", url, saveName);
+            //string url = paramList[0] as string;
+            //string saveName = paramList[1] as string;
+            //AndroidSDKHelper.FuncCall("DownloadGame", url, saveName);
         }
 
         public override void InstallApk()
         {
-            AndroidSDKHelper.FuncCall("InstallApk");
+            //AndroidSDKHelper.FuncCall("InstallApk");
         }
 
         public override void Login()
