@@ -36,6 +36,6 @@ UpdatableSingleton.__init = __init
 UpdatableSingleton.__delete = __delete
 UpdatableSingleton.Startup = Startup
 UpdatableSingleton.GetInstance = GetInstance
-UpdatableSingleton.Destory = Destory
+UpdatableSingleton.Delete = Delete
 
 return UpdatableSingleton

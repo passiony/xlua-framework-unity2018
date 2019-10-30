@@ -84,7 +84,7 @@ local function OnCreate(self)
 	elseif type(self.__var_arg) == "userdata" then
 		-- Unity侧GameObject
 		self.gameObject = self.__var_arg
-		self.transform = gameObject.transform
+		self.transform = self.gameObject.transform
 	else
 		error("OnCreate : error params list! "..type(self.__var_arg).." "..tostring(self.__var_arg))
 	end

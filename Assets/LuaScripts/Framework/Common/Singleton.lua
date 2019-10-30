@@ -36,6 +36,6 @@ Singleton.__init = __init
 Singleton.__delete = __delete
 Singleton.Startup = Startup
 Singleton.GetInstance = GetInstance
-Singleton.Destory = Destory
+Singleton.Delete = Delete
 
 return Singleton;
