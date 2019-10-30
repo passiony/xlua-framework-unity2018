@@ -88,6 +88,7 @@ public static class GenConfig
         typeof(UnityEngine.Resources),
         typeof(UnityEngine.ResourceRequest),
         typeof(UnityEngine.SceneManagement.SceneManager),
+        typeof(AsyncOperation),
         
         // 其它
         typeof(PlayerPrefs),

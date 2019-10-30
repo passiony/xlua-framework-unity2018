@@ -12,6 +12,11 @@ end
 
 -- 进入游戏
 local function EnterGame()
+
+	-- luaide 调试
+	-- local breakInfoFun,xpcallFun = require("LuaDebug")("localhost", 7003)
+	-- luaide 调试
+
 	-- TODO：服务器信息应该从服务器上拉取，这里读取测试数据
 	local ServerData = require "DataCenter.ServerData.ServerData"
 	local TestServerData = require "GameTest.DataTest.TestServerData"
@@ -23,8 +28,6 @@ local function EnterGame()
 	end
 	
 	SceneManager:GetInstance():SwitchScene(SceneConfig.LoginScene)
-	
-	--Logger.Log("###################################################")
 end
 
 --主入口函数。从这里开始lua逻辑
