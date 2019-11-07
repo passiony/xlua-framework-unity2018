@@ -34,7 +34,7 @@ namespace Networks
         {
             String newServerIp = "";
             AddressFamily newAddressFamily = AddressFamily.InterNetwork;
-            IPv6SupportMidleware.getIPType(mIp, mPort.ToString(), out newServerIp, out newAddressFamily);
+            IPv6SupportMidleware.getIPType(mIp, mPort.ToString(), out newAddressFamily);
             if (!string.IsNullOrEmpty(newServerIp))
             {
                 mIp = newServerIp;
