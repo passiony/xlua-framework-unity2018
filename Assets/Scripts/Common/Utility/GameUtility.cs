@@ -25,6 +25,15 @@ public class GameUtility
         return path.Replace("/", "\\");
     }
 
+    public static string GetPlatform()
+    {
+        return Application.platform.ToString();
+    }
+    public static bool IsMobile()
+    {
+        return Application.isMobilePlatform;
+    }
+
     public static string FullPathToAssetPath(string full_path)
     {
         full_path = FormatToUnityPath(full_path);

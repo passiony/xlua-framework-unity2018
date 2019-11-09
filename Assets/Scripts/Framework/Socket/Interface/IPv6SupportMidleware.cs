@@ -7,9 +7,9 @@ using System.Net;
 
 public class IPv6SupportMidleware
 {
-    public static void getIPType(String serverIp, String serverPorts, out AddressFamily mIPType)
-    {
-        mIPType = AddressFamily.InterNetwork;
+	public static void getIPType(String serverIp, String serverPorts, out AddressFamily  mIPType)
+	{
+		mIPType = AddressFamily.InterNetwork;
 
         //解析是否ipv6
         IPAddress[] address = Dns.GetHostAddresses(serverIp);
@@ -17,6 +17,6 @@ public class IPv6SupportMidleware
         {
             mIPType = AddressFamily.InterNetworkV6;
         }
-    }
+	}
 
 }

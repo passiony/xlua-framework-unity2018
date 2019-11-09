@@ -2,36 +2,25 @@
 @::make_proto.bat
 @echo off
 
-set UnityProtolDir=..\Assets\LuaScripts\Net\Protol
-set LuaProtoTmpDir=.\__tmp
-set LuaProtoSrcDir=..\ProtoToCS\ProtoGen\proto
+set UnityProtolDir=..\..\Assets\LuaScripts\Net\Proto
+set LuaProtoSrcDir=.\proto
 set LuaPluginDir=.\plugin
 
 if exist "%UnityProtolDir%" rd /s /q "%UnityProtolDir%"
 md "%UnityProtolDir%"
 
-if exist "%LuaProtoTmpDir%" rd /s /q "%LuaProtoTmpDir%"
-md "%LuaProtoTmpDir%"
 
-for /r "%LuaProtoSrcDir%" %%i in (*.proto) do (
-	copy /y "%%i" "%LuaProtoTmpDir%\%%~nxi"
-)  
-
-cd "%LuaProtoTmpDir%"
-call :stringlenth "%cd%" num 
+cd %LuaProtoSrcDir%
 setlocal enabledelayedexpansion
-for /r %%i in (*.proto) do (   
-	set absolute=%%i
-	set relative=.!absolute:~%num%!
-	echo !relative!
-	"..\protoc.exe" --plugin=protoc-gen-lua="..\plugin\build.bat" --lua_out="..\%UnityProtolDir%" "!relative!" 
-)  
-
+for /f %%i in ('dir /b proto "*.proto"') do (
+	echo..\protoc.exe -o %UnityProtolDir%\%%~ni.pb %%i 
+	..\protoc.exe -o %UnityProtolDir%\%%~ni.pb %%i 
+)
+	
 cd ..
-if exist "%LuaProtoTmpDir%" rd /s /q "%LuaProtoTmpDir%"
 
 cd "%LuaPluginDir%"
-@python msgid-gen-lua
+@python msgid-gen-lua.py
 
 echo DONE
 

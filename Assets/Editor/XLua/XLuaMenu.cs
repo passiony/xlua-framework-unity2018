@@ -17,7 +17,7 @@ public static class XLuaMenu
 
         FileUtil.CopyFileOrDirectoryFollowSymlinks(source, destination);
 
-        var notLuaFiles = GameUtility.GetSpecifyFilesInFolder(destination, new string[] { ".lua" }, true);
+        var notLuaFiles = GameUtility.GetSpecifyFilesInFolder(destination, new string[] { ".lua", ".pb" }, true);
         if (notLuaFiles != null && notLuaFiles.Length > 0)
         {
             for (int i = 0; i < notLuaFiles.Length; i++)
@@ -26,7 +26,7 @@ public static class XLuaMenu
             }
         }
 
-        var luaFiles = GameUtility.GetSpecifyFilesInFolder(destination, new string[] { ".lua" }, false);
+        var luaFiles = GameUtility.GetSpecifyFilesInFolder(destination, new string[] { ".lua" ,".pb" }, false);
         if (luaFiles != null && luaFiles.Length > 0)
         {
             for (int i = 0; i < luaFiles.Length; i++)

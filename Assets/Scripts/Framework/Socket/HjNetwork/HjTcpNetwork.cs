@@ -32,13 +32,9 @@ namespace Networks
 
         protected override void DoConnect()
         {
-            String newServerIp = "";
+
             AddressFamily newAddressFamily = AddressFamily.InterNetwork;
             IPv6SupportMidleware.getIPType(mIp, mPort.ToString(), out newAddressFamily);
-            if (!string.IsNullOrEmpty(newServerIp))
-            {
-                mIp = newServerIp;
-            }
 
             mClientSocket = new Socket(newAddressFamily, SocketType.Stream, ProtocolType.Tcp);
             mClientSocket.BeginConnect(mIp, mPort, (IAsyncResult ia) =>
@@ -205,7 +201,11 @@ namespace Networks
             }
             Logger.Log("HjTcpNetwork send bytes : " + sb.ToString());
 #endif
-            mSendMsgQueue.Add(msgObj);
+            ByteBuffer buffer = new ByteBuffer();
+            buffer.WriteInt(msgObj.Length);
+            buffer.WriteBytes(msgObj);
+
+            mSendMsgQueue.Add(buffer.ToBytes());
             mSendSemaphore.ProduceResrouce();
         }
     }
@@ -217,6 +217,7 @@ namespace Networks
         public static List<Type> LuaCallCSharp = new List<Type>()
         {
             typeof(HjTcpNetwork),
+            typeof(ByteBuffer),
         };
 
         [CSharpCallLua]

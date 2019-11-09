@@ -4,8 +4,7 @@
 --]]
 
 local UILoginCtrl = BaseClass("UILoginCtrl", UIBaseCtrl)
--- local MsgIDMap = require "Net.Config.MsgIDMap"
--- local MsgIDDefine = require "Net.Config.MsgIDDefine"
+local MsgIDDefine = require "Net.Config.MsgIDDefine"
 
 local function OnConnect(self, sender, result, msg)
 	if result < 0 then
@@ -15,7 +14,7 @@ local function OnConnect(self, sender, result, msg)
 	
 	-- TODO：
 	local msd_id = MsgIDDefine.LOGIN_REQ_GET_UID
-    local msg = (MsgIDMap[msd_id])()
+    local msg = {};
 	msg.plat_account = "455445"
 	msg.from_svrid = 4001
 	msg.device_id = ""
@@ -63,7 +62,7 @@ local function LoginServer(self, name, password)
 	
 	ClientData:GetInstance():SetAccountInfo(name, password)
 	
-	-- TODO
+	-- TODO start socket
 	--ConnectServer(self)
 	SceneManager:GetInstance():SwitchScene(SceneConfig.HomeScene)
 end
