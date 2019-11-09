@@ -57,6 +57,12 @@ UIButtonGroup = require "Framework.UI.Component.UIButtonGroup"
 UIWrapGroup = require "Framework.UI.Component.UIWrapGroup"
 UIEffect = require "Framework.UI.Component.UIEffect"
 
+--ui pointer
+UIPointerClick = require "Framework.UI.Component.UIPointerClick"
+UIPointerDownUp = require "Framework.UI.Component.UIPointerDownUp"
+UIPointerLongPress = require "Framework.UI.Component.UIPointerLongPress"
+UIPointerDoubleClick = require "Framework.UI.Component.UIPointerDoubleClick"
+
 -- ui window
 UILayers = require "Framework.UI.UILayers"
 UIWindow = require "Framework.UI.UIWindow"

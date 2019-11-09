@@ -16,6 +16,8 @@ local account_input_path = "ContentRoot/AccountRoot/AccountInput"
 local password_input_path = "ContentRoot/PasswordRoot/PasswordInput"
 local server_select_btn_path = "ContentRoot/SvrRoot/SvrSelectBtn"
 local login_btn_path = "ContentRoot/LoginBtn"
+local long_press_bg = "BgRoot/Bg"
+
 local app_version_text_path = "ContentRoot/AppVersionText"
 local res_version_text_path = "ContentRoot/ResVersionText"
 
@@ -51,6 +53,16 @@ local function OnCreate(self)
 	self.password_input = self:AddComponent(UIInput, password_input_path)
 	self.server_select_btn = self:AddComponent(UIButton, server_select_btn_path)
 	self.login_btn = self:AddComponent(UIButton, login_btn_path)
+
+	--长按事件
+	self.press_Img=self:AddComponent(UIPointerLongPress, long_press_bg);
+	self.press_Img:SetOnClick(function()
+		print("click")
+	end);
+	self.press_Img:SetOnPress(function()
+		print("long Press")
+	end);
+
 	-- 设置点击回调
 	-- 使用方式一：闭包绑定
 	self.server_select_btn:SetOnClick(function()

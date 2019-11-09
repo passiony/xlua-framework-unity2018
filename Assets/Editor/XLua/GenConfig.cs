@@ -75,6 +75,10 @@ public static class GenConfig
         typeof(UnityEngine.UI.GridLayoutGroup),
         typeof(UnityEngine.UI.ContentSizeFitter),
         typeof(UnityEngine.UI.Slider),
+        typeof(UIPointerClick),
+        typeof(UIPointerDoubleClick),
+        typeof(UIPointerDownUp),
+        typeof(UIPointerLongPress),
 
         // easy touch
         // TODO：后续需要什么脚本再添加进来
