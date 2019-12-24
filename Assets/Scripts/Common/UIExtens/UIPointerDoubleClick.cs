@@ -5,11 +5,11 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// 双击事件
+/// UI的双击事件
 /// </summary>
 public class UIPointerDoubleClick : MonoBehaviour,IPointerDownHandler
 {
-    public UnityEvent onClick = new UnityEvent();
+    public UIPointerEvent onClick = new UIPointerEvent();
 
     public float Interval = 0.5f;
 
@@ -22,7 +22,7 @@ public class UIPointerDoubleClick : MonoBehaviour,IPointerDownHandler
 
         if (secondClicked - firstClicked < Interval)
         {
-            onClick.Invoke();
+            onClick.Invoke(eventData);
         }
         else
         {

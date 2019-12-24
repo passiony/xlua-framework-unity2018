@@ -4,18 +4,28 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
+
+/// <summary>
+/// UI的按下和抬起事件
+/// </summary>
 public class UIPointerDownUp : MonoBehaviour,IPointerDownHandler,IPointerUpHandler
 {
-    public UnityEvent onPressDown = new UnityEvent();
-    public UnityEvent onPressUp = new UnityEvent();
+    public UIPointerEvent onPressDown = new UIPointerEvent();
+    public UIPointerEvent onPressUp = new UIPointerEvent();
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        onPressDown.Invoke();
+        onPressDown.Invoke(eventData);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        onPressUp.Invoke();
+        onPressUp.Invoke(eventData);
     }
+}
+
+namespace UnityEngine.Events
+{
+    [System.Serializable]
+    public class UIPointerEvent : UnityEvent<PointerEventData> { }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using XLua;
 using System;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// added by wsh @ 2017.12.25
@@ -25,13 +26,121 @@ public class GameUtility
         return path.Replace("/", "\\");
     }
 
+    /// <summary>
+    /// 获取当前平台
+    /// </summary>
+    /// <returns></returns>
     public static string GetPlatform()
     {
-        return Application.platform.ToString();
+        switch (Application.platform)
+        {
+            case RuntimePlatform.Android:
+                return "Android";
+            case RuntimePlatform.IPhonePlayer:
+                return "IOS";
+            default:
+                return "Windows";
+        }
     }
+
+    /// <summary>
+    /// 是否是移动端
+    /// </summary>
+    /// <returns></returns>
     public static bool IsMobile()
     {
         return Application.isMobilePlatform;
+    }
+
+    /// <summary>
+    /// 获取当前网络
+    /// </summary>
+    /// <returns>0：无网，1：移动网，2：wifi</returns>
+    public static int GetInternet()
+    {
+        return (int)Application.internetReachability;
+    }
+
+    /// <summary>
+    /// 手机永不休眠
+    /// </summary>
+    public static void NeverSleep()
+    {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+    }
+
+    /// <summary>
+    /// 获取时间戳
+    /// </summary>
+    /// <returns></returns>
+    public static string GetTimeStamp()
+    {
+        return new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString();
+    }
+
+    /// <summary>
+    /// 判断手指是否点击UI，用于UI遮挡
+    /// </summary>
+    public static bool IsPointerOverGameObject()
+    {
+#if UNITY_EDITOR
+        return EventSystem.current.IsPointerOverGameObject();
+#elif UNITY_ANDROID || UNITY_IOS
+        return EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
+#endif
+    }
+
+    /// <summary>
+    /// 获取手机点击的UI，用于判断指定UI遮挡
+    /// </summary>
+    public static bool GetPointerOverGameObject(out GameObject pressObject)
+    {
+        pressObject = null;
+
+        if (IsPointerOverGameObject())
+        {
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            eventDataCurrentPosition.position = new Vector2(
+#if UNITY_EDITOR
+            Input.mousePosition.x, Input.mousePosition.y
+#elif UNITY_ANDROID || UNITY_IOS
+           Input.touchCount > 0 ? Input.GetTouch(0).position.x : 0, Input.touchCount > 0 ? Input.GetTouch(0).position.y : 0
+#endif
+            );
+
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            if (results.Count > 0)
+            {
+                pressObject = results[0].gameObject;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 递归查找子节点
+    /// </summary>
+    /// <param name="parent">父节点</param>
+    /// <param name="name">子节点名字</param>
+    /// <returns>子节点Transform</returns>
+    public static Transform FindChildRecursion(Transform parent, string name)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == name)
+            {
+                return child;
+            }
+            else
+            {
+                Transform ret = FindChildRecursion(child, name);
+                if (ret != null)
+                    return ret;
+            }
+        }
+        return null;
     }
 
     public static string FullPathToAssetPath(string full_path)

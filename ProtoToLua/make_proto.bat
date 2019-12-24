@@ -26,14 +26,3 @@ echo DONE
 
 pause
 exit
-
-:StringLenth 
-	set theString=%~1
-	if not defined theString goto :eof 
-	set Return=0 
-:StringLenth_continue 
-	set /a Return+=1
-	set theString=%theString:~,-1%
-	if defined theString goto StringLenth_continue 
-	if not "%2"=="" set %2=%Return%
-goto :eof
