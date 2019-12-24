@@ -1,26 +1,36 @@
 # xlua-framework - unity2018
+
 基于xlua-framework的升级版，商业项目使用，持续更新...
+
 -
-升级简介
+
+## 升级简介
+
 -
 1.升级了xlua最新版本，兼容unity2017-unity2019
+
 2.重新整合了xlua框架，可以直接替换腾讯的xlua文件夹
+
 3.升级网络消息协议[sean-lin/protoc-gen-lua] 为 [starwing/lua-protobuf],用法同云风的pbc
+
 4.整合了网络框架，修复原网络框架的bug
+
 5.重写pb文件生成工具类，以及加载模块
+
 6.重写excel->lua的生成，策划使用更方便
+
 7.添加了rapidjson到框架中
+
 8.添加UI中常用的工具类，如长按，双击等
+
 9.添加lua调试工具类luadebug到工程，方便luaide的调试
+
 10.添加场景中人物名片UIBoard的显示，基于TextMeshPro
+
 11.添加了tolua/xlua中常用的C#工具类，如截屏，摄像头，小地图等
 
 
 
-
-# xlua-framework
-Unity游戏纯lua客户端完整框架---基于xlua，整合tolua的proto-gen-lua以及各个lua库和工具类
----未完成，持续更新中...
 
 -------------------------------------------------------------------
 
