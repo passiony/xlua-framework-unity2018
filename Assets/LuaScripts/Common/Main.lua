@@ -10,6 +10,7 @@ require "Common.Tools.import"
 require "Common.LuaUtil"
 require "Common.TableUtil"
 require "Common.StringUtil"
+require "Common.Define"
 
 Mathf		= require "Common.Tools.UnityEngine.Mathf"
 Vector2		= require "Common.Tools.UnityEngine.Vector2"
@@ -27,5 +28,6 @@ Time		= require "Common.Tools.UnityEngine.Time"
 Object		= require "Common.Tools.UnityEngine.Object"
 
 list		= require "Common.Tools.list"
+Queue		= require "Common.Tools.Queue"
 
 require "Common.Tools.event"

@@ -4,6 +4,7 @@
 --]]
 
 local CharacterAnimation = BaseClass("CharacterAnimation", Updatable)
+local base = Updatable
 
 local function Start(self, chara_go)
 	-- 角色gameObject
@@ -15,6 +16,14 @@ local function Start(self, chara_go)
 	
 	assert(not IsNull(self.chara_ctrl), "chara_ctrl null")
 	assert(not IsNull(self.anim_ctrl), "anim_ctrl null")
+
+	-- 展示人物名片
+	self.id="123456"
+	self.nickName="nickname"
+	self.gameObject=chara_go;
+	self.transform=chara_go.transform;
+	
+	-- UIBoardManager:GetInstance():Open(self, EBoardType.PLAYER);
 end
 
 local function LateUpdate(self)
@@ -43,7 +52,13 @@ local function LateUpdate(self)
 	end
 end
 
+local function __delete(self)
+	base.__delete(self);
+	UIBoardManager:GetInstance():Destroy(self, EBoardType.PLAYER);
+end
+
 CharacterAnimation.Start = Start
 CharacterAnimation.LateUpdate = LateUpdate
+CharacterAnimation.__delete = __delete
 
 return CharacterAnimation

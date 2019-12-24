@@ -54,6 +54,7 @@ end
 
 -- 离开场景
 local function OnLeave(self)
+	self.charaAnim:Delete()
 	self.charaAnim = nil
 	UIManager:GetInstance():CloseWindow(UIWindowNames.UIBattleMain)
 	base.OnLeave(self)
