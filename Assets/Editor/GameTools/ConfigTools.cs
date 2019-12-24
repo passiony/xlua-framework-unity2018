@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 /// <summary>
 /// modify by zfc @ 2018.11.16
@@ -16,7 +17,7 @@ public class ConfigTools : EditorWindow
 
     private bool xlsxGenLuaFinished = false;
     private bool protoGenLuaFinished = false;
-    
+
     void OnEnable()
     {
         ReadPath();
@@ -34,7 +35,7 @@ public class ConfigTools : EditorWindow
         GUILayout.Space(10);
         GUILayout.BeginHorizontal();
         GUILayout.Label("xlsx path : ", EditorStyles.boldLabel, GUILayout.Width(80));
-        xlsxFolder = GUILayout.TextField(xlsxFolder, GUILayout.Width(240));
+        xlsxFolder = GUILayout.TextField(xlsxFolder, GUILayout.Width(300));
         if (GUILayout.Button("...", GUILayout.Width(40)))
         {
             SelectXlsxFolder();
@@ -44,7 +45,7 @@ public class ConfigTools : EditorWindow
         GUILayout.Space(10);
         GUILayout.BeginHorizontal();
         GUILayout.Label("proto path : ", EditorStyles.boldLabel, GUILayout.Width(80));
-        protoFolder = GUILayout.TextField(protoFolder, GUILayout.Width(240));
+        protoFolder = GUILayout.TextField(protoFolder, GUILayout.Width(300));
         if (GUILayout.Button("...", GUILayout.Width(40)))
         {
             SelectProtoFolder();
@@ -72,6 +73,10 @@ public class ConfigTools : EditorWindow
         GUILayout.EndHorizontal();
     }
 
+    static int count = 0;
+    static List<string> files = new List<string>();
+    static List<string> exported = new List<string>();
+
     private void XlsxGenLua()
     {
         if (!CheckXlsxPath(xlsxFolder))
@@ -79,35 +84,47 @@ public class ConfigTools : EditorWindow
             return;
         }
 
-        Process p = new Process();
-        p.StartInfo.FileName = @"python";
-        p.StartInfo.Arguments = xlsxFolder + "/tools/toconfigs.py";
-        p.StartInfo.UseShellExecute = false;
-        p.StartInfo.RedirectStandardOutput = true;
-        p.StartInfo.RedirectStandardInput = true;
-        p.StartInfo.RedirectStandardError = true;
-        p.StartInfo.CreateNoWindow = true;
-        p.StartInfo.WorkingDirectory = xlsxFolder + "/tools";
-        p.Start();
-        p.BeginOutputReadLine();
-        p.OutputDataReceived += new DataReceivedEventHandler((object sender, DataReceivedEventArgs e) =>
+        files.Clear();
+        exported.Clear();
+
+        GetFilter(xlsxFolder + "/excel", "*.xlsx");
+
+        foreach (var item in files)
         {
-            if (!string.IsNullOrEmpty(e.Data))
+            string fileName = Path.GetFileNameWithoutExtension(item);
+
+            Process p = new Process();
+            p.StartInfo.FileName = "python";
+            p.StartInfo.Arguments = string.Format("excel2lua.py excel/{0}.xlsx lua/{0}.lua", fileName);
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.RedirectStandardInput = true;
+            p.StartInfo.RedirectStandardError = true;
+            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.WorkingDirectory = xlsxFolder;
+            p.Start();
+            p.BeginOutputReadLine();
+            p.OutputDataReceived += new DataReceivedEventHandler((object sender, DataReceivedEventArgs e) =>
             {
-                UnityEngine.Debug.Log(e.Data);
-                if (e.Data.Contains("SUCCEEDED"))
+                if (!string.IsNullOrEmpty(e.Data))
                 {
-                    Process pr = sender as Process;
-                    if (pr != null)
+                    UnityEngine.Debug.Log(e.Data);
+                    if (e.Data.Contains("exported"))
                     {
-                        pr.Close();
+                        exported.Add(fileName);
+                        Process pr = sender as Process;
+                        if (pr != null)
+                        {
+                            pr.Close();
+                        }
+                        if (exported.Count == files.Count)
+                            xlsxGenLuaFinished = true;
                     }
-                    xlsxGenLuaFinished = true;
                 }
-            }
-        });
+            });
+        }
     }
-    
+
     private void ProtoGenLua()
     {
         if (!CheckProtoPath(protoFolder))
@@ -143,7 +160,7 @@ public class ConfigTools : EditorWindow
             }
         });
     }
-    
+
     void Update()
     {
         if (protoGenLuaFinished)
@@ -165,16 +182,22 @@ public class ConfigTools : EditorWindow
             }
             Directory.CreateDirectory(destPath);
 
-            string[] luaFiles = Directory.GetFiles(xlsxFolder + "/tools/sconfig");
+            string[] luaFiles = Directory.GetFiles(xlsxFolder + "/lua");
             foreach (var oneFile in luaFiles)
             {
                 string destFileName = Path.Combine(destPath, Path.GetFileName(oneFile));
-                UnityEngine.Debug.Log("Copy : " + destFileName);
+                UnityEngine.Debug.Log("Copy To: " + destFileName);
                 File.Copy(oneFile, destFileName, true);
             }
 
             AssetDatabase.Refresh();
-            EditorUtility.DisplayDialog("Succee", "Xlsx gen lua finished!", "Conform");
+
+            string content = exported.Count + " Xlsx gen lua finished!\n\n";
+            foreach (var item in exported)
+            {
+                content += "-->" + item + "\n";
+            }
+            EditorUtility.DisplayDialog("Succee", content, "Conform");
         }
     }
 
@@ -185,15 +208,15 @@ public class ConfigTools : EditorWindow
             return false;
         }
 
-        if (!File.Exists(xlsxPath + "/tools/client_batch_csv.py"))
+        if (!File.Exists(xlsxPath + "/trans2lua.bat"))
         {
-            EditorUtility.DisplayDialog("Error", "Err path :\nNo find ./tools/client_batch_csv.py", "Conform");
+            EditorUtility.DisplayDialog("Error", "Err path :\nNo find ./trans2lua.bat", "Conform");
             return false;
         }
 
         return true;
     }
-    
+
     private bool CheckProtoPath(string protoPath)
     {
         if (string.IsNullOrEmpty(protoPath))
@@ -244,5 +267,31 @@ public class ConfigTools : EditorWindow
     {
         xlsxFolder = EditorPrefs.GetString("xlsxFolder");
         protoFolder = EditorPrefs.GetString("protoFolder");
+    }
+
+    /// <summary>
+    /// 遍历目录及其子目录
+    /// </summary>
+    static void GetFilter(string path, string searchPattern)
+    {
+        string[] names = Directory.GetFiles(path, searchPattern);
+        string[] dirs = Directory.GetDirectories(path);
+
+        foreach (string filename in names)
+        {
+            string ext = Path.GetExtension(filename);
+            if (ext.Equals(".meta"))
+                continue;
+
+            FileInfo file = new FileInfo(filename);
+            if ((file.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                continue;
+
+            files.Add(filename.Replace('\\', '/'));
+        }
+        foreach (string dir in dirs)
+        {
+            GetFilter(dir, searchPattern);
+        }
     }
 }

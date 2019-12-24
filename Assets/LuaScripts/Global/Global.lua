@@ -56,12 +56,19 @@ UITabGroup = require "Framework.UI.Component.UITabGroup"
 UIButtonGroup = require "Framework.UI.Component.UIButtonGroup"
 UIWrapGroup = require "Framework.UI.Component.UIWrapGroup"
 UIEffect = require "Framework.UI.Component.UIEffect"
+UIAnimation = require "Framework.UI.Component.UIAnimation"
+
+--text mesh pro
+UITextMeshPro = require "Framework.UI.Component.UITextMeshPro"
+UITextMeshProUGUI = require "Framework.UI.Component.UITextMeshProUGUI"
+UITextMeshProInput = require "Framework.UI.Component.UITextMeshProInput"
 
 --ui pointer
 UIPointerClick = require "Framework.UI.Component.UIPointerClick"
 UIPointerDownUp = require "Framework.UI.Component.UIPointerDownUp"
 UIPointerLongPress = require "Framework.UI.Component.UIPointerLongPress"
 UIPointerDoubleClick = require "Framework.UI.Component.UIPointerDoubleClick"
+
 
 -- ui window
 UILayers = require "Framework.UI.UILayers"
@@ -70,6 +77,7 @@ UIManager = require "Framework.UI.UIManager"
 UIMessageNames = require "Framework.UI.Message.UIMessageNames"
 UIWindowNames = require "UI.Config.UIWindowNames"
 UIConfig = require "UI.Config.UIConfig"
+UIBoardManager = require "UI.UIBoard.UIBoardManager"
 
 -- res
 ResourcesManager = require "Framework.Resource.ResourcesManager"
@@ -107,3 +115,4 @@ SceneManager:GetInstance()
 AtlasManager:GetInstance()
 LogicUpdater:GetInstance()
 HallConnector:GetInstance()
+UIBoardManager:GetInstance()
