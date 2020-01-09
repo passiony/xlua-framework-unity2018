@@ -26,7 +26,36 @@
 
 11.添加了tolua/xlua中常用的C#工具类，如截屏，摄像头，小地图等
 
+-------------------------------------------------------------------
 
+## 新手必读
+
+- 1.编辑器下 快速运行
+
+1.打开Build Setting，切换到android或者ios平台
+
+2.打开Player Setting，切换Configuration->Api Compatibility Level 为.Net4.x
+
+3.检测是否为Editor模式，菜单栏的AssetBundles->Switch Model->Editor Model
+
+4.打开场景LaunchScene运行
+
+
+- 2.真机下 快速运行
+
+1.Xlua->Generate Code：生成xlua的gen文件。
+
+2.Xlua->Copy Lua Files To AssetPackage：拷贝lua文件到AssetPackage下，用于热更新。
+
+3.AssetBundles->Run All Checker：检测AssetsPackage目录下用于热更的文件是否齐全，对应的配置是否正确。
+
+4.AssetBundles->Build For Current Seeting：把AssetsPackage目录下的资源Build出bundle包到根目录AssetBundles文件夹下。
+
+5.AssetBundles->Copy To StreamingAssets：拷贝bundle资源到StreamingAssets目录，用于首次运行使用。
+
+6.AssetBundles->Switch Model->Editor Model：切换到Simulate模式，用于真机走热更新流程
+
+7.build出apk到真机上，运行游戏。
 
 
 -------------------------------------------------------------------
