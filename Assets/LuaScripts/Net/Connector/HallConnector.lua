@@ -38,7 +38,7 @@ local function LoadPB()
 	};
 	
 	--编辑器下和移动端，加载位置不同
-	if(CS.GameUtility.GetPlatform() == "WindowsEditor")then
+	if(CS.GameUtility.GetPlatform() == "Windows")then
 		table.walk(pbFiles,function(i,path)
 			print(path.." pb load success")
 			assert(pb.loadfile("Assets/LuaScripts/"..path))
