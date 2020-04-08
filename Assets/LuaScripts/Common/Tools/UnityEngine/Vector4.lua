@@ -82,7 +82,7 @@ function Vector4:SetScale(scale)
 end
 
 function Vector4:Normalize()
-	local v = vector4.New(self.x, self.y, self.z, self.w)
+	local v = Vector4.New(self.x, self.y, self.z, self.w)
 	return v:SetNormalize()
 end
 

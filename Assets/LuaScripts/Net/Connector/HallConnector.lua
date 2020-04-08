@@ -60,16 +60,19 @@ local function OnReceivePackage(self, receive_bytes)
 	local msg_id = receive:ReadShort();
 	local msg_bytes = receive:ReadBytes();
 	
-	Logger.Log("msg_id:"..msg_id.." | msg_bytes.len:"..#msg_bytes);
-	if(msg_bytes ~= nil)then
-		local msg = pb.decode(MsgIDMap[msg_id], msg_bytes)
-	end
-	
-	if(self.handlers[msg_id]~=nil)then
-		self.handlers[msg_id](msg_id, msg)
-	else
+	if(self.handlers[msg_id] == nil)then
 		Logger.LogError("msg_id 未绑定函数"..msg_id);
+		return;
 	end
+
+	Logger.Log("msg_id:"..msg_id.." | msg_bytes.len:"..#msg_bytes);
+
+	local msg = nil;
+	if(msg_bytes ~= nil)then
+		msg = pb.decode(MsgIDMap[msg_id], msg_bytes)
+	end
+
+	self.handlers[msg_id](msg_id, msg)
 end
 
 --连接服务器

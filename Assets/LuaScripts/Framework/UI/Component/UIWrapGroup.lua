@@ -42,7 +42,7 @@ local function OnCreate(self, wrap_class, ...)
 	assert(not IsNull(self.unity_grid), "No found UnityEngine.UI.GridLayoutGroup!")
 	self.unity_grid.enabled = false
 	if not IsNull(self.unity_sizefitter) then
-		self.unity_sizefitter.enabled = fasle
+		self.unity_sizefitter.enabled = false
 	end
 	
 	-- 由原生组件配置初始化数据
