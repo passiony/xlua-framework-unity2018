@@ -31,7 +31,7 @@ local _forward = Vector3.forward
 local _up = Vector3.up
 local _next = { 2, 3, 1 }
 
-local Quaternion = {}
+local Quaternion = {name="Quaternion"}
 local _getter = {}
 local unity_quaternion = CS.UnityEngine.Quaternion
 
@@ -588,9 +588,9 @@ function Quaternion.MulVec3(self, point)
 end
 
 Quaternion.__mul = function(lhs, rhs)
-	if Quaternion == getmetatable(rhs) then
+	if Quaternion.name == getmetatable(rhs).name then
 		return Quaternion.New((((lhs.w * rhs.x) + (lhs.x * rhs.w)) + (lhs.y * rhs.z)) - (lhs.z * rhs.y), (((lhs.w * rhs.y) + (lhs.y * rhs.w)) + (lhs.z * rhs.x)) - (lhs.x * rhs.z), (((lhs.w * rhs.z) + (lhs.z * rhs.w)) + (lhs.x * rhs.y)) - (lhs.y * rhs.x), (((lhs.w * rhs.w) - (lhs.x * rhs.x)) - (lhs.y * rhs.y)) - (lhs.z * rhs.z))	
-	elseif Vector3 == getmetatable(rhs) then
+	elseif Vector3.name == getmetatable(rhs).name then
 		return lhs:MulVec3(rhs)
 	end
 end

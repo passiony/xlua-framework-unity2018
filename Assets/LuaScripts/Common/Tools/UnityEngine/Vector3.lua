@@ -25,7 +25,7 @@ local type = type
 local rad2Deg = 57.295779513082
 local deg2Rad = 0.017453292519943
 
-local Vector3 = {}
+local Vector3 = {name="Vector3"}
 local _getter = {}
 local unity_vector3 = CS.UnityEngine.Vector3
 
