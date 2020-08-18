@@ -59,6 +59,7 @@ public class ConfigTools : EditorWindow
         {
             XlsxGenLua();
         }
+        GUILayout.Space(40);
         GUILayout.Label("---------------------");
         GUILayout.EndHorizontal();
 
@@ -69,6 +70,7 @@ public class ConfigTools : EditorWindow
         {
             ProtoGenLua();
         }
+        GUILayout.Space(40);
         GUILayout.Label("---------------------");
         GUILayout.EndHorizontal();
     }
