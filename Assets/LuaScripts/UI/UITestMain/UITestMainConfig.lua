@@ -10,7 +10,7 @@ local UITestMain = {
 	Model = nil,
 	Ctrl = require "UI.UITestMain.Controller.UITestMainCtrl",
 	View = require "UI.UITestMain.View.UITestMainView",
-	PrefabPath = "UI/Prefabs/View/UITestMain.prefab",
+	PrefabPath = "UI/Prefabs/UIMain/UITestMain.prefab",
 }
 
 return {

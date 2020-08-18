@@ -10,7 +10,7 @@ local UIBattleMain = {
 	Model = nil,
 	Ctrl = require "UI.UIBattle.Controller.UIBattleMainCtrl",
 	View = require "UI.UIBattle.View.UIBattleMainView",
-	PrefabPath = "UI/Prefabs/View/UIBattleMain.prefab",
+	PrefabPath = "UI/Prefabs/UIBattle/UIBattleMain.prefab",
 }
 
 return {

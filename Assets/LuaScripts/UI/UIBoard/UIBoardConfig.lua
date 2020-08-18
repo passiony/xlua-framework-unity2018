@@ -10,7 +10,7 @@ local UIBoardPlayer= {
 	Model = require "UI.UIBoard.Model.UIBoardPlayerModel",
 	Ctrl =  nil,
 	View = require "UI.UIBoard.View.UIBoardPlayerView",
-	PrefabPath = "UI/Prefabs/View/UIBoardPlayer.prefab",
+	PrefabPath = "UI/Prefabs/UIBoard/UIBoardPlayer.prefab",
 }
 
 local UIBoardNPC= {
@@ -19,7 +19,7 @@ local UIBoardNPC= {
 	Model = require "UI.UIBoard.Model.UIBoardNPCModel",
 	Ctrl =  nil,
 	View = require "UI.UIBoard.View.UIBoardNPCView",
-	PrefabPath = "UI/Prefabs/View/UIBoardNPC.prefab",
+	PrefabPath = "UI/Prefabs/UIBoard/UIBoardNPC.prefab",
 }
 
 return {

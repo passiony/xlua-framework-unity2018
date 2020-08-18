@@ -9,7 +9,7 @@ using XLua;
 [LuaCallCSharp]
 public class GameLaunch : MonoBehaviour
 {
-    const string launchPrefabPath = "UI/Prefabs/View/UILaunch.prefab";
+    const string launchPrefabPath = "UI/Prefabs/UILaunch/UILaunch.prefab";
     const string noticeTipPrefabPath = "UI/Prefabs/Common/UINoticeTip.prefab";
     GameObject launchPrefab;
     GameObject noticeTipPrefab;

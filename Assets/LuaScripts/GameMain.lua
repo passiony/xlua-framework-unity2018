@@ -6,7 +6,7 @@ GameMain = {};
 
 -- 全局初始化
 local function Initilize()
-	local loadingAssetbundlePath = "UI/Prefabs/View/UILoading.prefab"
+	local loadingAssetbundlePath = "UI/Prefabs/UILaunch/UILoading.prefab"
 	ResourcesManager:GetInstance():CoLoadAssetBundleAsync(loadingAssetbundlePath)
 end
 
