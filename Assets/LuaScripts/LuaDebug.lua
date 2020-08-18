@@ -1,9 +1,5 @@
 local debugger_reLoadFile =nil
-xpcall(function() 
-    debugger_reLoadFile = require("luaideReLoadFile")
-end,function() 
-    debugger_reLoadFile = function() print("未实现代码重载") end
-end)
+local debugger_xpcall = nil
 local debugger_stackInfo = nil
 local coro_debugger = nil
 local debugger_require = require
@@ -736,7 +732,15 @@ coroutine.resume = function(co, ...)
     end
     return _resume(co, ...)
 end
-
+local oldXpcall = xpcall
+xpcall = function(runFun,errFun,...)
+    return oldXpcall(runFun,function(err)
+        if(debugger_xpcall) then
+            debugger_xpcall()
+        end
+        errFun(err)
+    end,...)
+end
 LuaDebugger.event = {
     S2C_SetBreakPoints = 1,
     C2S_SetBreakPoints = 2,
@@ -2258,6 +2262,7 @@ debug_hook = function(event, line)
         --判断断点
         local breakInfo = LuaDebugger.breakInfos[file]
         local breakData = nil
+      
         if (breakInfo) then
           
             local ischeck = false
@@ -2268,18 +2273,21 @@ debug_hook = function(event, line)
                     break
                 end
             end
-           
+         
             if (ischeck) then
                 --并且在断点中
-                local info = stepInfo
-                if (not info) then
-                    info = getinfo(2)
-                end
+                -- local info = stepInfo
+                -- if (not info) then
+                --     print("info ---------------")
+                --     info = getinfo(2)
+                -- end
                 local hitPathNames = splitFilePath(LuaDebugger.currentLineFile)
-              
+             
                 local hitCounts = {}
                 local debugHitCounts = nil
+
                 for k, lineInfo in pairs(breakInfo) do
+              
                     local lines = lineInfo.lines
                     local pathNames = lineInfo.pathNames
                     debugHitCounts = lineInfo.hitCounts
@@ -2291,7 +2299,9 @@ debug_hook = function(event, line)
                         
                         local pathNamesCount = #pathNames
                         local checkCount = 0;
+                     
                         while (true) do
+                           
                             if (pathNames[pathNamesCount] ~= hitPathNames[hitPathNamesCount]) then
                                 break
                             else
@@ -2307,6 +2317,10 @@ debug_hook = function(event, line)
                         end
                         if(checkCount>0) then
                             break;
+                        end
+                        if(checkCount==0) then
+                            breakData = nil
+                            -- break;
                         end
                     else
                         breakData = nil
@@ -2381,7 +2395,7 @@ debug_hook = function(event, line)
         end
     end
 end
-local function debugger_xpcall()
+debugger_xpcall = function()
     --调用 coro_debugger 并传入 参数
     local data = debugger_stackInfo(4, LuaDebugger.event.C2S_HITBreakPoint)
     if(data.stack and data.stack[1]) then
@@ -2442,7 +2456,7 @@ local function start()
         end
     end
 end
-function StartDebug(host, port)
+function StartDebug(host, port,reLoad)
     if (not host) then
         print("error host nil")
     end
@@ -2464,7 +2478,18 @@ function StartDebug(host, port)
             print(error)
         end
     )
-    return debugger_receiveDebugBreakInfo, debugger_xpcall
+    --代码重载
+    if(isReLoad) then
+        xpcall(function() 
+            debugger_reLoadFile = require("luaideReLoadFile")
+        end,function() 
+            print("左侧luaide按钮->打开luaIde最新调试文件所在文件夹->luaideReLoadFile.lua->拷贝到项目中")
+            print("具体使用方式请看luaideReLoadFile中文件注释")
+            debugger_reLoadFile = function() print("未实现代码重载") end
+        end)
+    end
+    local tempFun = function() end
+    return debugger_receiveDebugBreakInfo, tempFun
 end
 
 --base64

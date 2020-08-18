@@ -1,9 +1,8 @@
 fileFormatVersion: 2
 guid: 28eb581fcb0b14445b0706e36edfbf93
 folderAsset: yes
-timeCreated: 1515655297
-licenseType: Pro
 DefaultImporter:
+  externalObjects: {}
   userData: 
-  assetBundleName: 
+  assetBundleName: ui/prefabs/common.assetbundle
   assetBundleVariant: 
