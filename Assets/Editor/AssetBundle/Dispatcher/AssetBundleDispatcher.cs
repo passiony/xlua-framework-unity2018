@@ -54,12 +54,18 @@ namespace AssetBundles
 
         void CheckRoot(bool checkChannel)
         {
+            if (importer == null)
+                return;
+
             var checkerConfig = new AssetBundleCheckerConfig(config.PackagePath, config.CheckerFilters);
             AssetBundleChecker.Run(checkerConfig, checkChannel);
         }
 
         void CheckChildren(bool checkChannel)
         {
+            if (importer == null)
+                return;
+                
             var childrenImporters = importer.GetChildren();
             var checkerConfig = new AssetBundleCheckerConfig();
             foreach (var childrenImport in childrenImporters)
