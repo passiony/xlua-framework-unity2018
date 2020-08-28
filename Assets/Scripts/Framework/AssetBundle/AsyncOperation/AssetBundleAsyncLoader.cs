@@ -96,7 +96,7 @@ namespace AssetBundles
                 var creater = AssetBundleManager.Instance.GetAssetBundleAsyncCreater(cur);
                 progressValue += (creater != null ? creater.progress : 1.0f) * progressSlice;
             }
-            return progressSlice;
+            return progressValue;
         }
         
         public override void Update()
