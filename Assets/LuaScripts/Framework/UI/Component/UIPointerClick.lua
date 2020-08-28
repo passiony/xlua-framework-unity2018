@@ -18,11 +18,6 @@ local function OnCreate(self, relative_path)
 	self.unity_uibutton = UIUtil.FindComponent(self.transform,typeof(CS.UIPointerClick), relative_path)
 	-- 记录点击回调
 	self.__onclick = nil
-	
-	if IsNull(self.unity_uibutton) and IsNull(self.gameObject) then
-		self.gameObject = self.unity_uibutton.gameObject
-		self.transform = self.unity_uibutton.transform
-	end
 end
 
 -- 虚拟点击

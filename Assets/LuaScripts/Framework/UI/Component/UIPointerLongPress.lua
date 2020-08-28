@@ -19,11 +19,6 @@ local function OnCreate(self, relative_path)
 	-- 记录点击回调
 	self.__onclick = nil
 	self.__onpress = nil
-	
-	if IsNull(self.unity_uibutton) and IsNull(self.gameObject) then
-		self.gameObject = self.unity_uibutton.gameObject
-		self.transform = self.unity_uibutton.transform
-	end
 end
 
 -- 点击回调

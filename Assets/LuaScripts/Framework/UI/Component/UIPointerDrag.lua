@@ -20,11 +20,6 @@ local function OnCreate(self, relative_path)
 	self.__onbeginDrag = nil
 	self.__ondrag = nil
 	self.__onbendDrag = nil
-	
-	if IsNull(self.unity_uidrag) and IsNull(self.gameObject) then
-		self.gameObject = self.unity_uidrag.gameObject
-		self.transform = self.unity_uidrag.transform
-	end
 end
 
 -- 点击回调
