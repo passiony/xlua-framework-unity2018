@@ -293,10 +293,10 @@ public class PackageTool : EditorWindow
         GUILayout.BeginHorizontal();
         if (PackageUtils.BuildAssetBundlesForPerChannel(buildTarget))
         {
-            if (GUILayout.Button("Copy SDK Resources", GUILayout.Width(200)))
-            {
-                EditorApplication.delayCall += CopyAndroidSDKResources;
-            }
+//            if (GUILayout.Button("Copy SDK Resources", GUILayout.Width(200)))
+//            {
+//                EditorApplication.delayCall += CopyAndroidSDKResources;
+//            }
             if (GUILayout.Button("Current Channel Only", GUILayout.Width(200)))
             {
                 EditorApplication.delayCall += BuildAndroidPlayerForCurrentChannel;
@@ -313,10 +313,10 @@ public class PackageTool : EditorWindow
         }
         else
         {
-            if (GUILayout.Button("Copy SDK Resource", GUILayout.Width(200)))
-            {
-                EditorApplication.delayCall += CopyAndroidSDKResources;
-            }
+//            if (GUILayout.Button("Copy SDK Resource", GUILayout.Width(200)))
+//            {
+//                EditorApplication.delayCall += CopyAndroidSDKResources;
+//            }
             if (GUILayout.Button("Execute Build", GUILayout.Width(200)))
             {
                 EditorApplication.delayCall += BuildAndroidPlayerForCurrentChannel;
