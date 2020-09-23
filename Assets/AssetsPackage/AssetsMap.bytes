@@ -1,3 +1,4 @@
+assetsmap_bytes.assetbundle,AssetsMap.bytes
 effect/common.assetbundle,Effect/Common/Materials/models_fx_R.mat
 effect/common.assetbundle,Effect/Common/Materials/models_fx_RGB.mat
 effect/common.assetbundle,Effect/Common/Texture/Matcap_Encode2.png
@@ -161,6 +162,7 @@ lua.assetbundle,Lua/UI/UINoticeTip/View/UINoticeTipView.lua.bytes
 lua.assetbundle,Lua/UI/UITestMain/Controller/UITestMainCtrl.lua.bytes
 lua.assetbundle,Lua/UI/UITestMain/UITestMainConfig.lua.bytes
 lua.assetbundle,Lua/UI/UITestMain/View/UITestMainView.lua.bytes
+lua.assetbundle,Lua/UnitTest/BattleILTest.lua.bytes
 lua.assetbundle,Lua/UnitTest/ClassTest.lua.bytes
 lua.assetbundle,Lua/UnitTest/CoroutineTest.lua.bytes
 lua.assetbundle,Lua/UnitTest/LoggerTest.lua.bytes
@@ -367,12 +369,11 @@ ui/atlas/role.assetbundle,UI/Atlas/Role/ui_role_66.png
 ui/fonts/system_art_ttf.assetbundle,UI/Fonts/system_art.TTF
 ui/fonts/system_ttf.assetbundle,UI/Fonts/system.TTF
 ui/prefabs/common/uinoticetip_prefab.assetbundle,UI/Prefabs/Common/UINoticeTip.prefab
-ui/prefabs/view/board.assetbundle,UI/Prefabs/UIBoard/UIBoardNPC.prefab
-ui/prefabs/view/board.assetbundle,UI/Prefabs/UIBoard/UIBoardPlayer.prefab
-ui/prefabs/view/uibattlemain_prefab.assetbundle,UI/Prefabs/UIBattle/UIBattleMain.prefab
-ui/prefabs/view/uilaunch_prefab.assetbundle,UI/Prefabs/UILaunch/UILaunch.prefab
-ui/prefabs/view/uiloading_prefab.assetbundle,UI/Prefabs/UILaunch/UILoading.prefab
-ui/prefabs/view/uilogin_prefab.assetbundle,UI/Prefabs/UILogin/UILogin.prefab
-ui/prefabs/view/uiloginserver_prefab.assetbundle,UI/Prefabs/UILogin/UILoginServer.prefab
-ui/prefabs/view/uitestmain_prefab.assetbundle,UI/Prefabs/UIMain/UITestMain.prefab
+ui/prefabs/uibattle.assetbundle,UI/Prefabs/UIBattle/UIBattleMain.prefab
+ui/prefabs/uiboard.assetbundle,UI/Prefabs/UIBoard/UIBoardNPC.prefab
+ui/prefabs/uiboard.assetbundle,UI/Prefabs/UIBoard/UIBoardPlayer.prefab
+ui/prefabs/uiloading.assetbundle,UI/Prefabs/UILoading/UILoading.prefab
+ui/prefabs/uilogin.assetbundle,UI/Prefabs/UILogin/UILogin.prefab
+ui/prefabs/uilogin.assetbundle,UI/Prefabs/UILogin/UILoginServer.prefab
+ui/prefabs/uimain.assetbundle,UI/Prefabs/UIMain/UITestMain.prefab
 variantsmap_bytes.assetbundle,VariantsMap.bytes
