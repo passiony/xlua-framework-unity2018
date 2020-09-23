@@ -9,96 +9,156 @@ using XLua;
 [LuaCallCSharp]
 public class GameLaunch : MonoBehaviour
 {
-    const string launchPrefabPath = "UI/Prefabs/UILaunch/UILaunch.prefab";
+    const string launchPrefabPath = "UI/Prefabs/UILoading/UILoading.prefab";
     const string noticeTipPrefabPath = "UI/Prefabs/Common/UINoticeTip.prefab";
+    const string LaunchLayerPath = "UIRoot/LuanchLayer";
+    
     GameObject launchPrefab;
     GameObject noticeTipPrefab;
     AssetbundleUpdater updater;
+    string channelName;
+    
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        Application.targetFrameRate = 60;
+    }
 
     IEnumerator Start ()
     {
-        LoggerHelper.Instance.Startup();
         //注释掉IOS的推送服务
 //#if UNITY_IPHONE
 //        UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert | UnityEngine.iOS.NotificationType.Badge | UnityEngine.iOS.NotificationType.Sound);
 //        UnityEngine.iOS.Device.SetNoBackupFlag(Application.persistentDataPath);
 //#endif
 
-        // 初始化App版本
+        // 启动资源管理模块
         var start = DateTime.Now;
+        yield return AssetBundleManager.Instance.Initialize();
+        Logger.Log(string.Format("AssetBundleManager Initialize use {0}ms", (DateTime.Now - start).Milliseconds));
+
+        yield return null;
+
+        // 初始化UI界面
+        start = DateTime.Now;
+        yield return InitLaunchPrefab();
+        Logger.Log(string.Format("Load launchPrefab use {0}ms", (DateTime.Now - start).Milliseconds));
+
+        // 初始化App版本
+        start = DateTime.Now;
         yield return InitAppVersion();
-        Logger.Log(string.Format("InitAppVersion use {0}ms", (DateTime.Now - start).Milliseconds));
+        Logger.Log(string.Format("Init AppVersion use {0}ms", (DateTime.Now - start).Milliseconds));
 
         // 初始化渠道
         start = DateTime.Now;
         yield return InitChannel();
-        Logger.Log(string.Format("InitChannel use {0}ms", (DateTime.Now - start).Milliseconds));
+        Logger.Log(string.Format("Init Channel use {0}ms", (DateTime.Now - start).Milliseconds));
 
-        // 启动资源管理模块
+        // 初始化SDK
         start = DateTime.Now;
-        yield return AssetBundleManager.Instance.Initialize();
-        Logger.Log(string.Format("AssetBundleManager Initialize use {0}ms", (DateTime.Now - start).Milliseconds));
+        yield return InitSDK();
+        Logger.Log(string.Format("Init SDK use {0}ms", (DateTime.Now - start).Milliseconds));
 
-        // 启动xlua热修复模块
-        start = DateTime.Now;
-        XLuaManager.Instance.Startup();
-        string luaAssetbundleName = XLuaManager.Instance.AssetbundleName;
-        AssetBundleManager.Instance.SetAssetBundleResident(luaAssetbundleName, true);
-        var abloader = AssetBundleManager.Instance.LoadAssetBundleAsync(luaAssetbundleName,typeof(TextAsset));
-        yield return abloader;
-        abloader.Dispose();
-        XLuaManager.Instance.OnInit();
-        XLuaManager.Instance.StartHotfix();
-        Logger.Log(string.Format("XLuaManager StartHotfix use {0}ms", (DateTime.Now - start).Milliseconds));
-
-        // 初始化UI界面
-        yield return InitLaunchPrefab();
         yield return null;
+
+        start = DateTime.Now;
         yield return InitNoticeTipPrefab();
+        Logger.Log(string.Format("Load noticeTipPrefab use {0}ms", (DateTime.Now - start).Milliseconds));
 
         // 开始更新
-        if (updater != null)
-        {
-            updater.StartCheckUpdate();
-        }
-        yield break;
+        start = DateTime.Now;
+        yield return updater.StartCheckUpdate();
+        Logger.Log(string.Format("CheckUpdate use {0}ms", (DateTime.Now - start).Milliseconds));
+        Destroy(updater);
+        yield return null;
+        
+        // 启动xlua框架
+        start = DateTime.Now;
+        XLuaManager.Instance.Startup();
+        yield return StartGame();
+        Logger.Log(string.Format("XLuaManager StartUp use {0}ms", (DateTime.Now - start).Milliseconds));
 	}
 
-    IEnumerator InitAppVersion()
+     IEnumerator InitAppVersion()
     {
+        var streamingAppVersion = "0.0.0";
+        var streamingResVersion = "0.0.0";
+        var streamingChannel = "Test";
+        
+#if UNITY_EDITOR
+        if (AssetBundleConfig.IsEditorMode)
+        {
+            ChannelManager.Instance.appVersion = streamingAppVersion;
+            ChannelManager.Instance.resVersion = streamingResVersion;
+            channelName = streamingChannel;
+            yield break;
+        }
+#endif
+        //streaming
         var appVersionRequest = AssetBundleManager.Instance.RequestAssetFileAsync(BuildUtils.AppVersionFileName);
         yield return appVersionRequest;
-        var streamingAppVersion = appVersionRequest.text;
+        var streamingTxt = appVersionRequest.text;
         appVersionRequest.Dispose();
 
-        var appVersionPath = AssetBundleUtility.GetPersistentDataPath(BuildUtils.AppVersionFileName);
-        var persistentAppVersion = GameUtility.SafeReadAllText(appVersionPath);
-        Logger.Log(string.Format("streamingAppVersion = {0}, persistentAppVersion = {1}", streamingAppVersion, persistentAppVersion));
-
-        // 如果persistent目录版本比streamingAssets目录app版本低，说明是大版本覆盖安装，清理过时的缓存
-        if (!string.IsNullOrEmpty(persistentAppVersion) && BuildUtils.CheckIsNewVersion(persistentAppVersion, streamingAppVersion))
+        if (!string.IsNullOrEmpty(streamingTxt))
         {
+            var array = streamingTxt.Split('|');
+            streamingAppVersion = array[0];
+            streamingResVersion = array[1];
+            streamingChannel = array[2];
+        }
+
+        //persistent
+        var persistentAppVersion = streamingAppVersion;
+        var persistentResVersion = streamingResVersion;
+        var persistentChannel = streamingChannel;
+        
+        var appVersionPath = AssetBundleUtility.GetPersistentDataPath(BuildUtils.AppVersionFileName);
+        var persistentTxt= GameUtility.SafeReadAllText(appVersionPath);
+        if (string.IsNullOrEmpty(persistentTxt))
+        {
+            GameUtility.SafeWriteAllText(appVersionPath,
+                streamingAppVersion + "|" + streamingResVersion + "|" + streamingChannel);
+        }
+        else
+        {
+            var array = persistentTxt.Split('|');
+            persistentAppVersion = array[0];
+            persistentResVersion = array[1];
+            persistentChannel = array[2];
+        }
+        
+        //init
+        ChannelManager.Instance.appVersion = persistentAppVersion;
+        ChannelManager.Instance.resVersion = persistentResVersion;
+        channelName = persistentChannel;
+
+        Logger.Log(string.Format("persistentResVersion = {0}, persistentResVersion = {1}, persistentChannel = {2}",
+            persistentAppVersion, persistentResVersion, persistentChannel));
+        Logger.Log(string.Format("streamingAppVersion = {0}, streamingAppVersion = {1}, streamingChannel = {2}",
+            streamingAppVersion, streamingResVersion, streamingChannel));
+        
+        // 如果persistent目录版本比streamingAssets目录app版本低，说明是大版本覆盖安装，清理过时的缓存
+        if (BuildUtils.CheckIsNewVersion(persistentAppVersion, streamingAppVersion))
+        {
+            Debug.Log("大版本覆盖安装，清理过时的缓存");
+            
+            ChannelManager.Instance.appVersion = streamingAppVersion;
+            ChannelManager.Instance.resVersion = streamingResVersion;
+            
             var path = AssetBundleUtility.GetPersistentDataPath();
             GameUtility.SafeDeleteDir(path);
+            GameUtility.SafeWriteAllText(appVersionPath,streamingAppVersion + "|" + streamingResVersion + "|" + streamingChannel);
+            
+            // 重启资源管理器
+            yield return AssetBundleManager.Instance.Cleanup();
+            yield return AssetBundleManager.Instance.Initialize();
         }
-        GameUtility.SafeWriteAllText(appVersionPath, streamingAppVersion);
-        ChannelManager.instance.appVersion = streamingAppVersion;
-        yield break;
     }
 
     IEnumerator InitChannel()
     {
-#if UNITY_EDITOR
-        if (AssetBundleConfig.IsEditorMode)
-        {
-            yield break;
-        }
-#endif
-        var channelNameRequest = AssetBundleManager.Instance.RequestAssetFileAsync(BuildUtils.ChannelNameFileName);
-        yield return channelNameRequest;
-        var channelName = channelNameRequest.text;
-        channelNameRequest.Dispose();
-        ChannelManager.instance.Init(channelName);
+        ChannelManager.Instance.Init(channelName);
         Logger.Log(string.Format("channelName = {0}", channelName));
         yield break;
     }
@@ -106,27 +166,19 @@ public class GameLaunch : MonoBehaviour
     GameObject InstantiateGameObject(GameObject prefab)
     {
         var start = DateTime.Now;
-        GameObject go = GameObject.Instantiate(prefab);
+        var luanchLayer = GameObject.Find(LaunchLayerPath).transform;
+        GameObject go = GameObject.Instantiate(prefab, luanchLayer);
+        go.name = prefab.name;
+        
         Logger.Log(string.Format("Instantiate use {0}ms", (DateTime.Now - start).Milliseconds));
-
-        var luanchLayer = GameObject.Find("UIRoot/LuanchLayer");
-        go.transform.SetParent(luanchLayer.transform);
-        var rectTransform = go.GetComponent<RectTransform>();
-        rectTransform.offsetMax = Vector2.zero;
-        rectTransform.offsetMin = Vector2.zero;
-        rectTransform.localScale = Vector3.one;
-        rectTransform.localPosition = Vector3.zero;
-
         return go;
     }
-
+    
     IEnumerator InitNoticeTipPrefab()
     {
-        var start = DateTime.Now;
         var loader = AssetBundleManager.Instance.LoadAssetAsync(noticeTipPrefabPath, typeof(GameObject));
         yield return loader;
         noticeTipPrefab = loader.asset as GameObject;
-        Logger.Log(string.Format("Load noticeTipPrefab use {0}ms", (DateTime.Now - start).Milliseconds));
         loader.Dispose();
         if (noticeTipPrefab == null)
         {
@@ -140,11 +192,9 @@ public class GameLaunch : MonoBehaviour
 
     IEnumerator InitLaunchPrefab()
     {
-        var start = DateTime.Now;
-        var loader = AssetBundleManager.Instance.LoadAssetAsync(launchPrefabPath, typeof(GameObject));
+        var loader = AssetBundleManager.Instance.LoadAssetAsync(launchPrefabPath,typeof(GameObject));
         yield return loader;
         launchPrefab= loader.asset as GameObject;
-        Logger.Log(string.Format("Load launchPrefab use {0}ms", (DateTime.Now - start).Milliseconds));
         loader.Dispose();
         if (launchPrefab == null)
         {
@@ -152,7 +202,35 @@ public class GameLaunch : MonoBehaviour
             yield break;
         }
         var go = InstantiateGameObject(launchPrefab);
+        UILauncher.Instance.UIGameObject = go;
         updater = go.AddComponent<AssetbundleUpdater>();
+    }
+    
+    IEnumerator InitSDK()
+    {
+        bool SDKInitComplete = false;
+        ChannelManager.Instance.InitSDK(() =>
+        {
+            SDKInitComplete = true;
+        });
+//        yield return new WaitUntil(()=> {
+//            return SDKInitComplete;
+//        });
         yield break;
+    }
+    
+    IEnumerator StartGame()
+    {
+        string luaAssetbundleName = XLuaManager.Instance.AssetbundleName;
+        AssetBundleManager.Instance.SetAssetBundleResident(luaAssetbundleName, true);
+        var abloader = AssetBundleManager.Instance.LoadAssetBundleAsync(luaAssetbundleName,typeof(TextAsset));
+        yield return abloader;
+        abloader.Dispose();
+
+        XLuaManager.Instance.OnInit();
+        XLuaManager.Instance.StartHotfix();
+        XLuaManager.Instance.StartGame();
+
+        CustomDataStruct.Helper.Startup();
     }
 }

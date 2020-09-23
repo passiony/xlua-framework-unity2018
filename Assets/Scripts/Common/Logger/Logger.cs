@@ -15,7 +15,8 @@ public class Logger
     private static bool m_isInit = false;
     private static int counter = 0;
     private static StringBuilder sb = new StringBuilder();
-    public static string clientVerstion = string.Empty;
+    public static string appVersion = string.Empty;
+    public static string resVersion = string.Empty;
     public static string loginUid = string.Empty;
     public static string localIP = string.Empty;
     public static string platName = string.Empty;

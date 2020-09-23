@@ -98,7 +98,7 @@ local function CoInnerSwitchScene(self, scene_config)
 	model.value = 1.0
 	coroutine.waitforframes(3)
 	-- 加载完成，关闭loading界面
-	uimgr_instance:DestroyWindow(UIWindowNames.UILoading)
+	uimgr_instance:CloseWindow(UIWindowNames.UILoading)
 	self.current_scene = logic_scene
 	self.busing = false
 end
