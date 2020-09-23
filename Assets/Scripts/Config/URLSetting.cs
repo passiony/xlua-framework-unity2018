@@ -10,18 +10,18 @@ public class URLSetting
         }
     }
 
-    public static string SERVER_RESOURCE_URL
-    {
-        get;
-        set;
-    }
-
     public static string APP_DOWNLOAD_URL
     {
         get;
         set;
     }
-    
+
+    public static string RES_DOWNLOAD_URL
+    {
+        get;
+        set;
+    }
+
     public static string LOGIN_URL
     {
         get;

@@ -36,7 +36,7 @@ public class AssetbundleUpdater : MonoBehaviour
     Manifest localManifest = null;
     Manifest hostManifest = null;
     List<string> needDownloadList = new List<string>();
-    List<ResourceWebRequester> downloadingRequest = new List<ResourceWebRequester>();
+    List<UnityWebAssetRequester> downloadingRequest = new List<UnityWebAssetRequester>();
 
     int downloadSize = 0;
     int totalDownloadCount = 0;
@@ -138,9 +138,6 @@ public class AssetbundleUpdater : MonoBehaviour
     IEnumerator StartGame()
     {
         statusText.text = "正在准备资源...";
-#if UNITY_EDITOR || CLIENT_DEBUG
-        AssetBundleManager.Instance.TestHotfix();
-#endif
         Logger.clientVerstion = clientAppVersion;
         ChannelManager.instance.resVersion = serverResVersion;
 
@@ -271,7 +268,7 @@ public class AssetbundleUpdater : MonoBehaviour
         sb.AppendFormat("REPORT_ERROR_URL = {0}\n", URLSetting.REPORT_ERROR_URL);
         sb.AppendFormat("NOTIFY_URL = {0}\n", URLSetting.NOTICE_URL);
         sb.AppendFormat("APP_DOWNLOAD_URL = {0}\n", URLSetting.APP_DOWNLOAD_URL);
-        sb.AppendFormat("SERVER_RESOURCE_ADDR = {0}\n", URLSetting.SERVER_RESOURCE_URL);
+        sb.AppendFormat("SERVER_RESOURCE_ADDR = {0}\n", URLSetting.RES_DOWNLOAD_URL);
         sb.AppendFormat("noticeVersion = {0}\n", ChannelManager.instance.noticeVersion);
         sb.AppendFormat("serverAppVersion = {0}\n", serverAppVersion);
         sb.AppendFormat("serverResVersion = {0}\n", serverResVersion);
@@ -338,7 +335,7 @@ public class AssetbundleUpdater : MonoBehaviour
 #elif UNITY_IPHONE
         // TODO：ios下载还有待探索
 #endif
-        URLSetting.SERVER_RESOURCE_URL = localSerUrlRequest.text + BuildUtils.ManifestBundleName + "/";
+        URLSetting.RES_DOWNLOAD_URL = localSerUrlRequest.text + BuildUtils.ManifestBundleName + "/";
         localSerUrlRequest.Dispose();
 
         // 从本地服务器拉一下App版本号
@@ -413,7 +410,7 @@ public class AssetbundleUpdater : MonoBehaviour
         }
         else if (urlList.ContainsKey("res") && !string.IsNullOrEmpty(urlList["res"].ToString()))
         {
-            URLSetting.SERVER_RESOURCE_URL = urlList["res"].ToString();
+            URLSetting.RES_DOWNLOAD_URL = urlList["res"].ToString();
         }
         yield break;
     }
@@ -488,7 +485,7 @@ public class AssetbundleUpdater : MonoBehaviour
     IEnumerator CheckGameUpdate(bool isInternal)
     {
         // 检测资源更新
-        Logger.Log("Resource download url : " + URLSetting.SERVER_RESOURCE_URL);
+        Logger.Log("Resource download url : " + URLSetting.RES_DOWNLOAD_URL);
         var start = DateTime.Now;
         yield return CheckIfNeededUpdate(isInternal);
         Logger.Log(string.Format("CheckIfNeededUpdate use {0}ms", (DateTime.Now - start).Milliseconds));
@@ -679,7 +676,7 @@ public class AssetbundleUpdater : MonoBehaviour
         // 重启Lua虚拟机
         string luaAssetbundleName = XLuaManager.Instance.AssetbundleName;
         AssetBundleManager.Instance.SetAssetBundleResident(luaAssetbundleName, true);
-        var abloader = AssetBundleManager.Instance.LoadAssetBundleAsync(luaAssetbundleName);
+        var abloader = AssetBundleManager.Instance.LoadAssetBundleAsync(luaAssetbundleName,typeof(TextAsset));
         yield return abloader;
         abloader.Dispose();
         XLuaManager.Instance.Restart();

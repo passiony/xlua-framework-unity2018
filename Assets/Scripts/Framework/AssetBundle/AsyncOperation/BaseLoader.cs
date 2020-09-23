@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace AssetBundles
 {
-    public abstract class ResourceAsyncOperation : IEnumerator, IDisposable
+    public abstract class BaseLoader : IEnumerator, IDisposable
     {
         public object Current
         {
@@ -56,7 +56,7 @@ namespace AssetBundles
         }
     }
 
-    abstract public class BaseAssetBundleAsyncLoader : ResourceAsyncOperation
+    abstract public class BaseAssetBundleAsyncLoader : BaseLoader
     {
         public string assetbundleName
         {
@@ -77,7 +77,7 @@ namespace AssetBundles
         }
     }
 
-    abstract public class BaseAssetAsyncLoader : ResourceAsyncOperation
+    abstract public class BaseAssetAsyncLoader : BaseLoader
     {
         public UnityEngine.Object asset
         {
@@ -85,9 +85,49 @@ namespace AssetBundles
             protected set;
         }
 
+        public UnityEngine.Object[] assets
+        {
+            get;
+            protected set;
+        }
+        
         public override void Dispose()
         {
             asset = null;
+        }
+    }
+    
+    abstract public class BaseAssetRequester : BaseLoader
+    {
+        public string assetbundleName
+        {
+            get;
+            protected set;
+        }
+
+        public virtual AssetBundle assetbundle
+        {
+            get;
+            protected set;
+        }
+
+        public int Sequence
+        {
+            get;
+            protected set;
+        }
+
+        public bool noCache
+        {
+            get;
+            protected set;
+        }
+
+        abstract public void Start();
+        public override void Dispose()
+        {
+            assetbundleName = null;
+            assetbundle = null;
         }
     }
 }

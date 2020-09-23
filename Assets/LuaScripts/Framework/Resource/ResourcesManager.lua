@@ -43,7 +43,7 @@ end
 local function CoLoadAssetBundleAsync(self, path, progress_callback)
 	assert(path ~= nil and type(path) == "string" and #path > 0, "path err : "..path)
 	local assetbundleName = AssetBundleUtility.AssetBundlePathToAssetBundleName(path)
-	local loader = AssetBundleManager:LoadAssetBundleAsync(assetbundleName)
+	local loader = AssetBundleManager:LoadAssetBundleAsync(assetbundleName,nil,false)
 	coroutine.waitforasyncop(loader, progress_callback)
     loader:Dispose()
 end
@@ -75,12 +75,8 @@ end
 
 -- 清理资源：切换场景时调用
 local function Cleanup(self)
-	AssetBundleManager:ClearAssetsCache()
+	AssetBundleManager:ClearAssetsCacheExclude(CS.XLuaManager.Instance.AssetbundleName)
 	AssetBundleManager:UnloadAllUnusedResidentAssetBundles()
-	
-	-- TODO：Lua脚本要重新加载，暂时吧，后面缓缓策略
-	local luaAssetbundleName = CS.XLuaManager.Instance.AssetbundleName
-	AssetBundleManager:AddAssetbundleAssetsCache(luaAssetbundleName)
 end
 
 ResourcesManager.IsProsessRunning = IsProsessRunning

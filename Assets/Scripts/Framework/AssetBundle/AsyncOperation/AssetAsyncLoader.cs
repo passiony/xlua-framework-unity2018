@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using XLua;
 
 /// <summary>
@@ -16,18 +17,25 @@ namespace AssetBundles
         static Queue<AssetAsyncLoader> pool = new Queue<AssetAsyncLoader>();
         static int sequence = 0;
         protected bool isOver = false;
+        protected bool isAtlas = false;
+        protected Type assetType;
         protected BaseAssetBundleAsyncLoader assetbundleLoader = null;
 
-        public static AssetAsyncLoader Get()
+        public static AssetAsyncLoader Get(bool isatlas,Type type)
         {
+            AssetAsyncLoader loader = null;
             if (pool.Count > 0)
             {
-                return pool.Dequeue();
+                loader = pool.Dequeue();
             }
             else
             {
-                return new AssetAsyncLoader(++sequence);
+                loader = new AssetAsyncLoader(++sequence);
             }
+
+            loader.isAtlas = isatlas;
+            loader.assetType = type;
+            return loader;
         }
 
         public static void Recycle(AssetAsyncLoader creater)
@@ -40,10 +48,18 @@ namespace AssetBundles
             Sequence = sequence;
         }
 
-        public void Init(string assetName, UnityEngine.Object asset)
+        public void Init(string assetName, object asset)
         {
             AssetName = assetName;
-            this.asset = asset;
+            if (isAtlas)
+            {
+                this.assets = (UnityEngine.Object[]) asset;
+            }
+            else
+            {
+                this.asset = (UnityEngine.Object) asset;
+            }
+            
             assetbundleLoader = null;
             isOver = true;
         }
@@ -96,15 +112,24 @@ namespace AssetBundles
                 return;
             }
 
-            asset = AssetBundleManager.Instance.GetAssetCache(AssetName);
+            if (isAtlas)
+            {
+                this.assets = (UnityEngine.Object[])AssetBundleManager.Instance.GetAssetCache(AssetName);
+            }
+            else
+            {
+                this.asset =  (UnityEngine.Object)AssetBundleManager.Instance.GetAssetCache(AssetName);
+            }
             assetbundleLoader.Dispose();
         }
 
         public override void Dispose()
         {
             isOver = true;
+            isAtlas = false;
             AssetName = null;
             asset = null;
+            assets = null;
             Recycle(this);
         }
     }

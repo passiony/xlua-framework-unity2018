@@ -16,6 +16,7 @@ namespace AssetBundles
     {
         public const string localSvrAppPath = "Editor/AssetBundle/LocalServer/AssetBundleServer.exe";
         public const string AssetBundlesFolderName = "AssetBundles";
+        public const string TempFolderName = "Temp";
         public const string AssetBundleSuffix = ".assetbundle";
         public const string AssetsFolderName = "AssetsPackage";
         public const string ChannelFolderName = "Channel";

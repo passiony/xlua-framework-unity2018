@@ -22,17 +22,23 @@ namespace AssetBundles
         protected List<string> waitingList = new List<string>();
         protected int waitingCount = 0;
         protected bool isOver = false;
-
-        public static AssetBundleAsyncLoader Get()
+        protected bool isAtlas = false;//图集加载
+        protected Type assetType;
+        public static AssetBundleAsyncLoader Get(bool isatlas,Type type)
         {
+            AssetBundleAsyncLoader loader = null;
             if (pool.Count > 0)
             {
-                return pool.Dequeue();
+                loader = pool.Dequeue();
             }
             else
             {
-                return new AssetBundleAsyncLoader(++sequence);
+                loader = new AssetBundleAsyncLoader(++sequence);
             }
+
+            loader.isAtlas = isatlas;
+            loader.assetType = type;
+            return loader;
         }
 
         public static void Recycle(AssetBundleAsyncLoader loader)
@@ -152,7 +158,7 @@ namespace AssetBundles
             isOver = waitingList.Count == 0;
             if (isOver)
             {
-                AssetBundleManager.Instance.AddAssetbundleAssetsCache(assetbundleName);
+                AssetBundleManager.Instance.AddAssetbundleAssetsCache(assetbundleName, assetType, isAtlas);
             }
         }
 

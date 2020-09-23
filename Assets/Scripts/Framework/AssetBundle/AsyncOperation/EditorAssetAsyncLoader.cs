@@ -15,6 +15,11 @@ namespace AssetBundles
             asset = obj;
         }
         
+        public EditorAssetAsyncLoader(UnityEngine.Object[] objs)
+        {
+            assets = objs;
+        }
+        
         public override void Update()
         {
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using XLua;
 
 /// <summary>
@@ -20,14 +21,14 @@ namespace AssetBundles
 {
     [Hotfix]
     [LuaCallCSharp]
-    public class ResourceWebRequester : ResourceAsyncOperation
+    public class UnityWebAssetRequester : BaseAssetRequester
     {
-        static Queue<ResourceWebRequester> pool = new Queue<ResourceWebRequester>();
+        static Queue<UnityWebAssetRequester> pool = new Queue<UnityWebAssetRequester>();
         static int sequence = 0;
-        protected WWW www = null;
+        protected UnityWebRequest www = null;
         protected bool isOver = false;
 
-        public static ResourceWebRequester Get()
+        public static UnityWebAssetRequester Get()
         {
             if (pool.Count > 0)
             {
@@ -35,16 +36,16 @@ namespace AssetBundles
             }
             else
             {
-                return new ResourceWebRequester(++sequence);
+                return new UnityWebAssetRequester(++sequence);
             }
         }
 
-        public static void Recycle(ResourceWebRequester creater)
+        public static void Recycle(UnityWebAssetRequester creater)
         {
             pool.Enqueue(creater);
         }
 
-        public ResourceWebRequester(int sequence)
+        public UnityWebAssetRequester(int sequence)
         {
             Sequence = sequence;
         }
@@ -58,43 +59,17 @@ namespace AssetBundles
             isOver = false;
         }
 
-        public int Sequence
-        {
-            get;
-            protected set;
-        }
-
-        public bool noCache
-        {
-            get;
-            protected set;
-        }
-
-        public string assetbundleName
-        {
-            get;
-            protected set;
-        }
-
         public string url
         {
             get;
             protected set;
         }
 
-        public AssetBundle assetbundle
-        {
-            get
-            {
-                return www.assetBundle;
-            }
-        }
-
         public byte[] bytes
         {
             get
             {
-                return www.bytes;
+                return www.downloadHandler.data;
             }
         }
 
@@ -102,7 +77,7 @@ namespace AssetBundles
         {
             get
             {
-                return www.text;
+                return www.downloadHandler.text;
             }
         }
 
@@ -121,18 +96,12 @@ namespace AssetBundles
             return isOver;
         }
 
-        public void Start()
+        public override void Start()
         {
-            www = new WWW(url);
-            if (www == null)
-            {
-                Logger.LogError("New www failed!!!");
-                isOver = true;
-            }
-            else
-            {
-                //Logger.Log("Downloading : " + url);
-            }
+            www = new UnityWebRequest(url);
+            www.downloadHandler = new DownloadHandlerBuffer();
+
+            www.SendWebRequest();
         }
         
         public override float Progress()
@@ -142,7 +111,7 @@ namespace AssetBundles
                 return 1.0f;
             }
 
-            return www != null ? www.progress : 0f;
+            return www != null ? www.downloadProgress : 0f;
         }
 
         public override void Update()
@@ -160,7 +129,7 @@ namespace AssetBundles
 
             if (www != null && !string.IsNullOrEmpty(www.error))
             {
-                Logger.LogError(www.error + "\n" + url);
+                Logger.LogError(www.error + "\n" + www.url);
             }
         }
 

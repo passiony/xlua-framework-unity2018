@@ -16,6 +16,15 @@ namespace AssetBundles
     [LuaCallCSharp]
     public class AssetBundleUtility
     {
+        public static bool IsEditorMode()
+        {
+#if UNITY_EDITOR
+            return AssetBundleConfig.IsEditorMode;
+#else
+            return false;
+#endif
+        }
+        
         private static string GetPlatformName(RuntimePlatform platform)
         {
             switch (platform)
@@ -79,6 +88,20 @@ namespace AssetBundles
 #endif
         }
 
+        public static string GetPersistentTempPath(string assetPath = null)
+        {
+            string outputPath = Path.Combine(Application.persistentDataPath, AssetBundleConfig.TempFolderName);
+            if (!string.IsNullOrEmpty(assetPath))
+            {
+                outputPath = Path.Combine(outputPath, assetPath);
+            }
+#if UNITY_STANDALONE_WIN
+            return GameUtility.FormatToSysFilePath(outputPath);
+#else
+            return outputPath;
+#endif
+        }
+        
         public static bool CheckPersistentFileExsits(string filePath)
         {
             var path = GetPersistentDataPath(filePath);
@@ -95,6 +118,18 @@ namespace AssetBundles
             else
             {
                 return GetStreamingAssetsFilePath(filePath);
+            }
+        }
+        
+        public static string GetAssetBundleDataPath(string filePath)
+        {
+            if (CheckPersistentFileExsits(filePath))
+            {
+                return GetPersistentDataPath(filePath);
+            }
+            else
+            {
+                return GetStreamingAssetsDataPath(filePath);
             }
         }
         
@@ -138,7 +173,7 @@ namespace AssetBundles
             }
             else
             {
-                Debug.LogError("Asset path is not a package path!");
+                Debug.LogError($"Asset path is not a package path! \n{assetPath}");
                 return assetPath;
             }
         }
