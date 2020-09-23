@@ -413,4 +413,49 @@ public class PackageUtils
             File.Copy(sourceFiles[j], destination + "/" + Path.GetFileName(sourceFiles[j]), true);
         }
     }
+    
+    public static string[] ReadCurAppAndResVersionFile()
+    {
+        var buildTarget = EditorUserBuildSettings.activeBuildTarget;
+        var channelType = GetCurSelectedChannel();
+        
+        return ReadAppAndResVersionFile(buildTarget,channelType);
+    }
+    
+    public static string IncreaseResSubVersion(string versionstr)
+    {
+        // 每一次构建资源，子版本号自增，注意：前两个字段这里不做托管，自行编辑设置
+        string[] vers = versionstr.Split('.');
+        if (vers.Length > 0)
+        {
+            int subVer = 0;
+            int.TryParse(vers[vers.Length - 1], out subVer);
+//            vers[vers.Length - 1] = string.Format("{0:D3}", subVer + 1);
+            vers[vers.Length - 1] = (subVer + 1).ToString();
+        }
+        versionstr = string.Join(".", vers);
+        return versionstr;
+    }
+    
+    public static string[] ReadAppAndResVersionFile(BuildTarget buildTarget,ChannelType channelType)
+    {
+        // 从资源版本号文件（当前渠道AB输出目录中）加载资源版本号
+        string rootPath = GetAssetBundleOutputPath(buildTarget,channelType.ToString());
+        
+        string app_path = rootPath + "/" + BuildUtils.AppVersionFileName;
+        app_path = GameUtility.FormatToUnityPath(app_path);
+        string resVersion = "0.0.0";
+
+        string content = GameUtility.SafeReadAllText(app_path);
+        if (content != null)
+        {
+            var arr = content.Split('|');
+            if (arr.Length >= 2)
+            {
+                return arr;
+            }
+        }
+        Debug.LogError("找不到 appVersion.bytes 文件");
+        return null;
+    }
 }

@@ -53,8 +53,6 @@ public class AssetbundleUpdater : MonoBehaviour
     
     void Start()
     {
-        resVersionPath = AssetBundleUtility.GetPersistentDataPath(BuildUtils.ResVersionFileName);
-        noticeVersionPath = AssetBundleUtility.GetPersistentDataPath(BuildUtils.NoticeVersionFileName);
         DateTime startDate = new DateTime(1970, 1, 1);
         timeStamp = (DateTime.Now - startDate).TotalMilliseconds;
         UILauncher.Instance.SetSatus("正在检测资源更新...");
@@ -144,7 +142,7 @@ public class AssetbundleUpdater : MonoBehaviour
         if (isInternalVersion)
         {
 #if UNITY_ANDROID
-            if (ChannelManager.instance.IsGooglePlay())
+            if (ChannelManager.Instance.IsGooglePlay())
             {
                 // TODO：这里还要探索下怎么下载
                 needDownloadGame = false;
@@ -221,21 +219,23 @@ public class AssetbundleUpdater : MonoBehaviour
 
     IEnumerator DownloadInternalServerResVersion()
     {
-        var request = AssetBundleManager.Instance.DownloadAssetFileAsync(BuildUtils.ResVersionFileName);
+        var request = AssetBundleManager.Instance.DownloadAssetFileAsync(BuildUtils.AppVersionFileName);
         yield return request;
         if (request.error != null)
         {
             UINoticeTip.Instance.ShowOneButtonTip("网络错误", "检测更新失败，请确认网络已经连接！", "重试", null);
             yield return UINoticeTip.Instance.WaitForResponse();
-            Logger.LogError("Download :  " + request.assetbundleName + "\n from url : " + request.url + "\n err : " +
-                            request.error);
+            Logger.LogError("Download :  " + request.assetbundleName + "\n from url : " + request.url + "\n err : " + request.error);
             request.Dispose();
 
             // 内部版本本地服务器有问题直接跳过，不要卡住游戏
             yield break;
         }
 
-        serverResVersion = request.text.Trim().Replace("\r", "");
+        var versionTxt = request.text.Trim().Replace("\r", "");
+        var array= versionTxt.Split('|');
+        serverAppVersion = array[0];
+        serverResVersion = array[1];
         request.Dispose();
 
         yield break;

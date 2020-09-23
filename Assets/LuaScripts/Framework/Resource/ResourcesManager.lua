@@ -75,7 +75,7 @@ end
 
 -- 清理资源：切换场景时调用
 local function Cleanup(self)
-	AssetBundleManager:ClearAssetsCacheExclude(CS.XLuaManager.Instance.AssetbundleName)
+	AssetBundleManager:ClearAssetsCacheExcludeLua()
 	AssetBundleManager:UnloadAllUnusedResidentAssetBundles()
 end
 

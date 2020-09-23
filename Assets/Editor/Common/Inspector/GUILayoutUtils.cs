@@ -135,7 +135,7 @@ public class GUILayoutUtils
         if (!minimalistic)
         {
             GUILayout.BeginHorizontal();
-            EditorGUILayout.BeginHorizontal("AS TextArea", GUILayout.MinHeight(10f));
+            EditorGUILayout.BeginHorizontal(GUILayout.MinHeight(10f));
         }
         else
         {

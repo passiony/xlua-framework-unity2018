@@ -5,7 +5,7 @@ using XLua;
 using System;
 using UObject = UnityEngine.Object;
 using System.IO;
-
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -815,22 +815,13 @@ namespace AssetBundles
         {
             assetsCaching.Clear();
         }
-        public void ClearAssetsCacheExclude(string[] excludes)
+        
+        public void ClearAssetsCacheExcludeLua()
         {
-            var keys = assetsCaching.Keys;
+            var keys = assetsCaching.Keys.ToList();
             foreach (var key in keys)
             {
-                bool contain = false;
-                foreach (var exclude in excludes)
-                {
-                    if (key == exclude)
-                    {
-                        contain = true;
-                        break;
-                    }
-                }
-
-                if (!contain)
+                if (!key.EndsWith(".lua.bytes"))
                 {
                     assetsCaching.Remove(key);
                 }

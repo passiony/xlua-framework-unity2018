@@ -5,6 +5,7 @@ using System.IO;
 using GameChannel;
 using AssetBundles;
 using System;
+using System.Linq;
 using System.Text;
 
 /// <summary>
@@ -18,49 +19,105 @@ using System.Text;
 
 public class BuildPlayer : Editor
 {
+    public const string StudioOutputPath = "vStudio";
     public const string XCodeOutputPath = "vXCode";
 
-    public static void WriteChannelNameFile(BuildTarget buildTarget, string channelName)
-    {
-        var outputPath = PackageUtils.GetAssetBundleOutputPath(buildTarget, channelName);
-        GameUtility.SafeWriteAllText(Path.Combine(outputPath, BuildUtils.ChannelNameFileName), channelName);
-    }
+//    public static void WriteChannelNameFile(BuildTarget buildTarget, string channelName)
+//    {
+//        var outputPath = PackageUtils.GetAssetBundleOutputPath(buildTarget, channelName);
+//        GameUtility.SafeWriteAllText(Path.Combine(outputPath, BuildUtils.ChannelNameFileName), channelName);
+//    }
 
-    public static void WriteAssetBundleSize(BuildTarget buildTarget, string channelName)
+    public static void WriteAssetBundleSize(AssetBundleManifest manifest)
     {
-        var outputPath = PackageUtils.GetAssetBundleOutputPath(buildTarget, channelName);
-        var allAssetbundles = GameUtility.GetSpecifyFilesInFolder(outputPath, new string[] { ".assetbundle" });
+        var outputPath = PackageUtils.GetCurBuildSettingAssetBundleOutputPath();
+        var allAssetbundles = manifest.GetAllAssetBundles();
+        
         StringBuilder sb = new StringBuilder();
         if (allAssetbundles != null && allAssetbundles.Length > 0)
         {
             foreach (var assetbundle in allAssetbundles)
             {
-                FileInfo fileInfo = new FileInfo(assetbundle);
+                FileInfo fileInfo = new FileInfo(Path.Combine(outputPath, assetbundle));
+
+                Hash128 hash = manifest.GetAssetBundleHash(assetbundle);
                 int size = (int)(fileInfo.Length / 1024) + 1;
-                var path = assetbundle.Substring(outputPath.Length + 1);
-                sb.AppendFormat("{0}{1}{2}\n", GameUtility.FormatToUnityPath(path), AssetBundleConfig.CommonMapPattren, size);
+                sb.AppendFormat("{0}|{1}|{2}\n", GameUtility.FormatToUnityPath(assetbundle), hash, size);
             }
         }
         string content = sb.ToString().Trim();
-        GameUtility.SafeWriteAllText(Path.Combine(outputPath, BuildUtils.AssetBundlesSizeFileName), content);
+        GameUtility.SafeWriteAllText(Path.Combine(outputPath, BuildUtils.VersionsFileName), content);
     }
     
     private static void InnerBuildAssetBundles(BuildTarget buildTarget, string channelName, bool writeConfig)
     {
         BuildAssetBundleOptions buildOption = BuildAssetBundleOptions.IgnoreTypeTreeChanges | BuildAssetBundleOptions.DeterministicAssetBundle;
         string outputPath = PackageUtils.GetAssetBundleOutputPath(buildTarget, channelName);
+//        var old_manifest = GetCurrentManifest();
+        
         AssetBundleManifest manifest = BuildPipeline.BuildAssetBundles(outputPath, buildOption, buildTarget);
         if (manifest != null && writeConfig)
         {
             AssetsPathMappingEditor.BuildPathMapping(manifest);
             VariantMappingEditor.BuildVariantMapping(manifest);
-            BuildPipeline.BuildAssetBundles(outputPath, buildOption, buildTarget);
+            manifest = BuildPipeline.BuildAssetBundles(outputPath, buildOption, buildTarget);
         }
-        WriteChannelNameFile(buildTarget, channelName);
-        WriteAssetBundleSize(buildTarget, channelName);
+
+        WriteAssetBundleSize(manifest);
+        ClearUnuseFiles(outputPath, manifest);
         AssetDatabase.Refresh();
+
+        //写入修改文件，刷新cdn
+//        var new_manifest = GetCurrentManifest();
+//        var updates = old_manifest.CompareTo(new_manifest);
+//        SaveCDNFlushFile(updates);
     }
 
+    private static void ClearUnuseFiles(string outputPath, AssetBundleManifest manifest)
+    {
+        var items = manifest.GetAllAssetBundles();
+        var buildVersions = items.ToDictionary(item => item, item => manifest.GetAssetBundleHash(item).ToString());
+        
+        //clear no use files
+        string[] ignoredFiles = { "AssetBundles","AssetBundleServerUrl", "versions.bytes", "assetsmap_bytes", "app_version.bytes" };
+        var files = Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories);
+        var deletes = (from t in files
+            let file = t.Replace('\\', '/').Replace(outputPath.Replace('\\', '/') + '/', "")
+            where !file.EndsWith(".manifest", StringComparison.Ordinal) && !Array.Exists(ignoredFiles, s => s.Equals(file))
+            where !buildVersions.ContainsKey(file)
+            select t).ToList();
+
+        foreach (string delete in deletes)
+        {
+            if (!File.Exists(delete))
+            {
+                continue;
+            }
+
+            File.Delete(delete);
+            File.Delete(delete + ".manifest");
+        }
+        deletes.Clear();
+    }
+    
+    public static Manifest GetCurrentManifest()
+    {
+        var buildTarget = EditorUserBuildSettings.activeBuildTarget;
+        string channelName = PackageUtils.GetCurSelectedChannel().ToString();
+        
+        string path = PackageUtils.GetAssetbundleManifestPath(buildTarget, channelName);
+        Manifest manifest=new Manifest();
+
+        if (File.Exists(path))
+        {
+            AssetBundle assetBundle = AssetBundle.LoadFromFile(path);
+            manifest.LoadFromAssetbundle(assetBundle);
+            assetBundle.Unload(false);
+        }
+              
+        return manifest;
+    }
+    
     public static void BuildAssetBundles(BuildTarget buildTarget, string channelName)
     {
         bool buildForPerChannel = PackageUtils.BuildAssetBundlesForPerChannel(buildTarget);
