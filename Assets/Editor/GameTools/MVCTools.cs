@@ -13,7 +13,7 @@ public class MVCTools : EditorWindow
         EditorWindow.GetWindow(typeof(MVCTools));
     }
 
-    public static string author = "passion";
+    public static string author = "author";
     public static string newUIStr = "UIName";
     public static string newFileStr = "FileName";
     public static string newWarpItemStr = "UIXXXWarpItem";
@@ -184,7 +184,6 @@ public class MVCTools : EditorWindow
 
         + newUIStr + "Model.OnCreate = OnCreate" + "\r\n"
         + newUIStr + "Model.OnEnable = OnEnable" + "\r\n"
-        + newUIStr + "Model.OnDisable = OnDisable" + "\r\n"
         + newUIStr + "Model.OnDestroy = OnDestroy" + "\r\n\r\n"
         + "return " + newUIStr + "Model" + "\r\n";
 
