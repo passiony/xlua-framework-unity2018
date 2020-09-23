@@ -10,6 +10,22 @@ local base = UIBaseView
 local loading_text_path = "ContentRoot/LoadingDesc"
 local loading_slider_path = "ContentRoot/SliderBar"
 
+local function __init(self, holder, name, model, ctrl)
+	base.__init(self, holder, name, model, ctrl)
+	
+	self.gameObject=CS.UILauncher.Instance.UIGameObject;
+    self.transform=self.gameObject.transform;
+    self.transform:SetParent(holder.transform)
+    self.transform.name = name
+	self.__name = name
+    self.rectTransform = UIUtil.FindComponent(self.transform, typeof(CS.UnityEngine.RectTransform))
+    
+    self.components = {}
+    self.length = 0
+    
+    self:OnCreate();
+end
+
 local function OnCreate(self)
 	base.OnCreate(self)
 	-- 初始化各个组件
@@ -45,6 +61,7 @@ local function OnDestroy(self)
 	base.OnDestroy(self)
 end
 
+UILoadingView.__init = __init
 UILoadingView.OnCreate = OnCreate
 UILoadingView.OnEnable = OnEnable
 UILoadingView.Update = Update
