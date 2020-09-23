@@ -11,7 +11,7 @@ using XLua;
 
 [Hotfix]
 [LuaCallCSharp]
-public class UINoticeTip : MonoSingleton<UINoticeTip>
+public class UINoticeTip : Singleton<UINoticeTip>
 {
     GameObject go;
     Text titleText;
@@ -209,9 +209,7 @@ public class UINoticeTip : MonoSingleton<UINoticeTip>
     {
         if (go != null)
         {
-            Destroy(go);
+            UnityEngine.Object.Destroy(go);
         }
-
-        base.Dispose();
     }
 }

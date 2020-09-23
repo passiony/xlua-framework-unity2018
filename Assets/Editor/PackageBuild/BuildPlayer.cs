@@ -150,7 +150,7 @@ public class BuildPlayer : Editor
             LaunchAssetBundleServer.WriteAssetBundleServerURL();
         }
         
-        BaseChannel channel = ChannelManager.instance.CreateChannel(channelName);
+        BaseChannel channel = ChannelManager.Instance.CreateChannel(channelName);
         SetPlayerSetting(channel);
 
         string savePath = PackageUtils.GetChannelOutputPath(buildTarget, channelName);
@@ -198,7 +198,7 @@ public class BuildPlayer : Editor
         }
         PlayerSettings.SetIconsForTargetGroup(BuildTargetGroup.iOS, iconList.ToArray());
 
-        BaseChannel channel = ChannelManager.instance.CreateChannel(channelName);
+        BaseChannel channel = ChannelManager.Instance.CreateChannel(channelName);
         SetPlayerSetting(channel);
 
         PackageUtils.CheckAndAddSymbolIfNeeded(buildTarget, channelName);

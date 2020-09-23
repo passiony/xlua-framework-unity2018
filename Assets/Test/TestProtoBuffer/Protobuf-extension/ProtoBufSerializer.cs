@@ -33,12 +33,12 @@ public class ProtoBufSerializer : Singleton<ProtoBufSerializer>
 
     static public void Serialize(Stream dest, object instance)
     {
-        ProtoBufSerializer.instance.model.Serialize(dest, instance);
+        ProtoBufSerializer.Instance.model.Serialize(dest, instance);
     }
 
     static public object Deserialize(Stream source, System.Type type, int length = -1)
     {
-        return ProtoBufSerializer.instance.model.Deserialize(source, null, type, length, null);
+        return ProtoBufSerializer.Instance.model.Deserialize(source, null, type, length, null);
     }
 
     void AddCustomSerializer()

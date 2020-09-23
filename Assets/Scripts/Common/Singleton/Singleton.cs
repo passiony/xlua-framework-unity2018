@@ -4,7 +4,7 @@ using UnityEngine;
 public abstract class Singleton<T> where T : class, new()
 {
 	private static T m_instance;
-	public static T instance
+	public static T Instance
 	{
 		get
         {

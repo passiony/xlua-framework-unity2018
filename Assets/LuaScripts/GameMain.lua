@@ -4,12 +4,6 @@ require "Global.Global"
 -- 定义为全局模块，整个lua程序的入口类
 GameMain = {};
 
--- 全局初始化
-local function Initilize()
-	local loadingAssetbundlePath = "UI/Prefabs/UILaunch/UILoading.prefab"
-	ResourcesManager:GetInstance():CoLoadAssetBundleAsync(loadingAssetbundlePath)
-end
-
 -- 进入游戏
 local function EnterGame()
 
@@ -47,7 +41,6 @@ local function Start()
 	-- end
 	
 	coroutine.start(function()
-		Initilize()
 		EnterGame()
 	end)
 end
