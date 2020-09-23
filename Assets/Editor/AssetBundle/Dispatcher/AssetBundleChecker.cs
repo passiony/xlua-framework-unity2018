@@ -118,10 +118,10 @@ namespace AssetBundles
         {
             var checker = new AssetBundleChecker(config);
             checker.CheckAssetBundleName();
-            if (checkChannel)
-            {
-                checker.CheckChannelName();
-            }
+//            if (checkChannel)
+//            {
+//                checker.CheckChannelName();
+//            }
             AssetDatabase.Refresh();
         }
     }
