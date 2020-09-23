@@ -62,12 +62,20 @@ local function __init(self)
 		return layers[lkey].OrderInLayer < layers[rkey].OrderInLayer
 	end, function(index, layer)
 		assert(self.layers[layer.Name] == nil, "Aready exist layer : "..layer.Name)
-		local go = CS.UnityEngine.GameObject(layer.Name)
-		local trans = go.transform
-		trans:SetParent(self.transform)
+
+		if(layer ~= UILayers.TopLayer)then
+			local go = CS.UnityEngine.GameObject(layer.Name)
+			local trans = go.transform
+			trans:SetParent(self.transform)
+		end
+
 		local new_layer = UILayer.New(self, layer.Name)
 		new_layer:OnCreate(layer)
 		self.layers[layer.Name] = new_layer
+
+		if(layer == UILayers.TopLayer)then
+			new_layer.transform:SetAsLastSibling()
+		end
 	end)
 end
 

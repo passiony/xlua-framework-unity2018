@@ -11,7 +11,7 @@ public class GameLaunch : MonoBehaviour
 {
     const string launchPrefabPath = "UI/Prefabs/UILoading/UILoading.prefab";
     const string noticeTipPrefabPath = "UI/Prefabs/Common/UINoticeTip.prefab";
-    const string LaunchLayerPath = "UIRoot/LuanchLayer";
+    const string LaunchLayerPath = "UIRoot/TopLayer";
     
     GameObject launchPrefab;
     GameObject noticeTipPrefab;
@@ -166,7 +166,7 @@ public class GameLaunch : MonoBehaviour
     GameObject InstantiateGameObject(GameObject prefab)
     {
         var start = DateTime.Now;
-        var luanchLayer = GameObject.Find(LaunchLayerPath).transform;
+        var luanchLayer = transform.Find(LaunchLayerPath);
         GameObject go = GameObject.Instantiate(prefab, luanchLayer);
         go.name = prefab.name;
         
