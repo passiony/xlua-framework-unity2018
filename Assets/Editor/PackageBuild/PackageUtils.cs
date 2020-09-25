@@ -450,7 +450,7 @@ public class PackageUtils
         if (content != null)
         {
             var arr = content.Split('|');
-            if (arr.Length >= 2)
+            if (arr.Length >= 3)
             {
                 return arr;
             }

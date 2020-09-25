@@ -47,8 +47,7 @@ public class PackageTool : EditorWindow
         buildTarget = EditorUserBuildSettings.activeBuildTarget;
         channelType = PackageUtils.GetCurSelectedChannel();
 
-        appVersion = PlayerSettings.bundleVersion;
-        resVersion = ReadResVersionConfig();
+        ReadLocalVersionFile(buildTarget, channelType);
 
         localServerType = PackageUtils.GetLocalServerType();
         localServerIP = PackageUtils.GetLocalServerIP();
@@ -143,7 +142,7 @@ public class PackageTool : EditorWindow
         {
             appVersion = curBundleVersion;
             PlayerSettings.bundleVersion = curBundleVersion;
-            SaveAllLocalVersionFile(buildTarget, channelType);
+            SaveLocalVersionFile(buildTarget, channelType);
         }
         GUILayout.EndHorizontal();
         
@@ -154,7 +153,7 @@ public class PackageTool : EditorWindow
         if (curResVersion != resVersion)
         {
             resVersion = curResVersion;
-            SaveAllLocalVersionFile(buildTarget, channelType);
+            SaveLocalVersionFile(buildTarget, channelType);
         }
         GUILayout.EndHorizontal();
 
@@ -163,7 +162,7 @@ public class PackageTool : EditorWindow
         GUILayout.BeginHorizontal();
         if (PackageUtils.BuildAssetBundlesForPerChannel(buildTarget))
         {
-            if (GUILayout.Button("Load ResVersion From Channel", GUILayout.Width(200)))
+            if (GUILayout.Button("Load Version From Channel", GUILayout.Width(200)))
             {
                 ReadLocalVersionFile(buildTarget, channelType);
             }
@@ -178,13 +177,13 @@ public class PackageTool : EditorWindow
         }
         else
         {
-            if (GUILayout.Button("Load ResVersion From Channel", GUILayout.Width(200)))
+            if (GUILayout.Button("Load Version From Channel", GUILayout.Width(200)))
             {
                 ReadLocalVersionFile(buildTarget, channelType);
             }
-            if (GUILayout.Button("Save All Version To Channel", GUILayout.Width(200)))
+            if (GUILayout.Button("Save Version To Channel", GUILayout.Width(200)))
             {
-                SaveAllVersionFile();
+                SaveLocalVersionFile(buildTarget, channelType);
             }
         }
         GUILayout.EndHorizontal();
@@ -435,7 +434,7 @@ public class PackageTool : EditorWindow
 
         Debug.Log("Load local version :" + content);
         var arr = content.Split('|');
-        if (arr.Length >= 2)
+        if (arr.Length >= 3)
         {
             appVersion = arr[0];
             resVersion = arr[1];
@@ -445,7 +444,7 @@ public class PackageTool : EditorWindow
         return true;
     }
 
-    public static void SaveAllLocalVersionFile(BuildTarget target, ChannelType channel)
+    public static void SaveLocalVersionFile(BuildTarget target, ChannelType channel)
     {
         string rootPath = PackageUtils.GetAssetBundleOutputPath(target, channel.ToString());
         
@@ -515,7 +514,7 @@ public class PackageTool : EditorWindow
         // 保存当前版本号信息到所有渠道AB输出目录
         foreach (var current in (ChannelType[])Enum.GetValues(typeof(ChannelType)))
         {
-            SaveAllLocalVersionFile(buildTarget, current);
+            SaveLocalVersionFile(buildTarget, current);
         }
         EditorUtility.DisplayDialog("Success", "Save all version files to all channels done!", "Confirm");
     }
@@ -528,7 +527,7 @@ public class PackageTool : EditorWindow
         resVersion = PackageUtils.IncreaseResSubVersion(resVersion);
         Instance.Repaint();
         Debug.Log("IncreaseResSubVersion:" + resVersion);
-        SaveAllLocalVersionFile(buildTarget, channelType);
+        SaveLocalVersionFile(buildTarget, channelType);
         SaveServerVersionFile(true);
     }
 
@@ -592,7 +591,7 @@ public class PackageTool : EditorWindow
         
         Instance.Repaint();
         Debug.Log("IncreaseAppSubVersion:" + appVersion);
-        SaveAllLocalVersionFile(buildTarget, channelType);
+        SaveLocalVersionFile(buildTarget, channelType);
         SaveServerVersionFile(true);
     }
 
