@@ -11,6 +11,7 @@ namespace AssetBundles
     public class AssetBundleResVersionConfig : ScriptableObject
     {
         public const string RES_PATH = AssetBundleInspectorUtils.DatabaseRoot + "/AssetBundleResVersionConfig.asset";
-        public string resVersion = "1.0.000";
+        public string appVersion = "1.0.0";
+        public string resVersion = "1.0.0";
     }
 }

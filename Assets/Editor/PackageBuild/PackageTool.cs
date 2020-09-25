@@ -384,36 +384,36 @@ public class PackageTool : EditorWindow
     #endregion
 
     #region 资源配置操作
-    public static string ReadResVersionConfig()
-    {
-        // 从数据库加载资源版本号
-        AssetBundleResVersionConfig config = AssetDatabase.LoadAssetAtPath(AssetBundleResVersionConfig.RES_PATH, typeof(AssetBundleResVersionConfig)) as AssetBundleResVersionConfig;
-        if (config == null)
-        {
-            config = CreateInstance<AssetBundleResVersionConfig>();
-            AssetDatabase.CreateAsset(config, AssetBundleResVersionConfig.RES_PATH);
-            AssetDatabase.Refresh();
-        }
-
-        return config.resVersion;
-    }
-
-    public static void SaveResVersionConfig(string curResVersion)
-    {
-        // 保存资源版本号到数据库
-        AssetBundleResVersionConfig config = AssetDatabase.LoadAssetAtPath(AssetBundleResVersionConfig.RES_PATH, typeof(AssetBundleResVersionConfig)) as AssetBundleResVersionConfig;
-        if (config == null)
-        {
-            config = CreateInstance<AssetBundleResVersionConfig>();
-            AssetDatabase.CreateAsset(config, AssetBundleResVersionConfig.RES_PATH);
-            AssetDatabase.Refresh();
-        }
-
-        config.resVersion = curResVersion;
-        EditorUtility.SetDirty(config);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-    }
+    // 此处存储的VersionConfig和VersionFile重复，暂时不用
+    //public static void ReadVersionConfig()
+    //{
+    //    // 从数据库加载资源版本号
+    //    AssetBundleResVersionConfig config = AssetDatabase.LoadAssetAtPath(AssetBundleResVersionConfig.RES_PATH, typeof(AssetBundleResVersionConfig)) as AssetBundleResVersionConfig;
+    //    if (config == null)
+    //    {
+    //        config = CreateInstance<AssetBundleResVersionConfig>();
+    //        AssetDatabase.CreateAsset(config, AssetBundleResVersionConfig.RES_PATH);
+    //        AssetDatabase.Refresh();
+    //    }
+    //    appVersion = config.appVersion;
+    //    resVersion = config.resVersion;
+    //}
+    //public static void SaveVersionConfig()
+    //{
+    //    // 保存资源版本号到数据库
+    //    AssetBundleResVersionConfig config = AssetDatabase.LoadAssetAtPath(AssetBundleResVersionConfig.RES_PATH, typeof(AssetBundleResVersionConfig)) as AssetBundleResVersionConfig;
+    //    if (config == null)
+    //    {
+    //        config = CreateInstance<AssetBundleResVersionConfig>();
+    //        AssetDatabase.CreateAsset(config, AssetBundleResVersionConfig.RES_PATH);
+    //        AssetDatabase.Refresh();
+    //    }
+    //    config.appVersion = appVersion;
+    //    config.resVersion = resVersion;
+    //    EditorUtility.SetDirty(config);
+    //    AssetDatabase.SaveAssets();
+    //    AssetDatabase.Refresh();
+    //}
 
     public static bool ReadLocalVersionFile(BuildTarget target, ChannelType channel)
     {
@@ -458,6 +458,7 @@ public class PackageTool : EditorWindow
     }
 
     #region Server Control Versions
+    //资源版本一般都是存储在服务器端，此处逻辑不同公司方式不同，暂不给出
     public static void LoadServerResVersion(bool silence = false)
     {
         
