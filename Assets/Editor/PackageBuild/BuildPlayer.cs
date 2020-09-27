@@ -22,17 +22,18 @@ public class BuildPlayer : Editor
     public const string StudioOutputPath = "vStudio";
     public const string XCodeOutputPath = "vXCode";
 
-//    public static void WriteChannelNameFile(BuildTarget buildTarget, string channelName)
-//    {
-//        var outputPath = PackageUtils.GetAssetBundleOutputPath(buildTarget, channelName);
-//        GameUtility.SafeWriteAllText(Path.Combine(outputPath, BuildUtils.ChannelNameFileName), channelName);
-//    }
+    //    public static void WriteChannelNameFile(BuildTarget buildTarget, string channelName)
+    //    {
+    //        var outputPath = PackageUtils.GetAssetBundleOutputPath(buildTarget, channelName);
+    //        GameUtility.SafeWriteAllText(Path.Combine(outputPath, BuildUtils.ChannelNameFileName), channelName);
+    //    }
 
-    public static void WriteAssetBundleSize(AssetBundleManifest manifest)
+    //把所有bundle的详情：filename|md5|size 写入文件versions.txt
+    public static void WriteBundlesVersionFile(AssetBundleManifest manifest)
     {
         var outputPath = PackageUtils.GetCurBuildSettingAssetBundleOutputPath();
         var allAssetbundles = manifest.GetAllAssetBundles();
-        
+
         StringBuilder sb = new StringBuilder();
         if (allAssetbundles != null && allAssetbundles.Length > 0)
         {
@@ -63,7 +64,7 @@ public class BuildPlayer : Editor
             manifest = BuildPipeline.BuildAssetBundles(outputPath, buildOption, buildTarget);
         }
 
-        WriteAssetBundleSize(manifest);
+        WriteBundlesVersionFile(manifest);
         ClearUnuseFiles(outputPath, manifest);
         AssetDatabase.Refresh();
 
