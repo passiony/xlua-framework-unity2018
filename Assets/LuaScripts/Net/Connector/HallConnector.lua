@@ -55,17 +55,15 @@ end
 
 --接受数据
 local function OnReceivePackage(self, receive_bytes)
-	local receive = CS.ByteBuffer(receive_bytes);
+	local msg_id = string.unpack("=I2",receive_bytes)
+	local msg_bytes = string.sub(receive_bytes, 3)
 
-	local msg_id = receive:ReadShort();
-	local msg_bytes = receive:ReadBytes();
-	
 	if(self.handlers[msg_id] == nil)then
-		Logger.LogError("msg_id 未绑定函数"..msg_id);
+		Logger.Error("msg_id 未绑定函数"..msg_id);
 		return;
 	end
 
-	Logger.Log("msg_id:"..msg_id.." | msg_bytes.len:"..#msg_bytes);
+	--Logger.Debug("receive message cmdId:"..msg_id.." | msg_bytes.len:"..#msg_bytes);
 
 	local msg = nil;
 	if(msg_bytes ~= nil)then
@@ -90,17 +88,16 @@ local function Connect(self, host_ip, host_port, on_connect, on_close)
 	return self.hallSocket
 end
 
+-- 发送数据
 local function SendMessage(self, msg_id, msg)
-	local send = CS.ByteBuffer();
-	send:WriteShort(msg_id);
+	local bytes = ""
+	bytes = bytes..string.pack("=I2",msg_id);
 	if(msg)then
 		local msg_bytes=pb.encode(MsgIDMap[msg_id], msg)
-		send:WriteBytes(msg_bytes);
+		bytes = bytes..msg_bytes
 	end
 	
-	local bytes=send:ToBytes();
-	Logger.Log("send messge："..msg_id.."；byte count："..#bytes);
-
+	-- Logger.Debug("send message: \ncmdId："..msg_id.."\nbyte count："..#bytes.."\ntable->"..(msg and table.dump(msg) or "{}"));
 	self.hallSocket:SendMessage(bytes);
 end
 
