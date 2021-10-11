@@ -1,0 +1,25 @@
+{
+  "name": "xlua-framework-unity2018",
+  "version": "1.0.0",
+  "description": "基于xlua-framework的升级版，商业项目使用，持续更新...\r 兼容unity2017,unity2019，unity2020,unity2021",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/passiony/xlua-framework-unity2018.git"
+  },
+  "keywords": [
+    "xlua",
+    "lua",
+    "framework",
+    "unity"
+  ],
+  "author": "passion",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/passiony/xlua-framework-unity2018/issues"
+  },
+  "homepage": "https://github.com/passiony/xlua-framework-unity2018#readme"
+}
