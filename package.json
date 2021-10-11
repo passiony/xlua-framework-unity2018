@@ -1,7 +1,7 @@
 {
-  "name": "xlua-framework-unity2018",
+  "name": "xlua-framework-2018",
   "version": "1.0.0",
-  "description": "基于xlua-framework的升级版，商业项目使用，持续更新...\r 兼容unity2017,unity2019，unity2020,unity2021",
+  "description": "基于xlua-framework的升级版，商业项目使用，持续更新...",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
